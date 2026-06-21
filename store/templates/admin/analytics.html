@@ -1,0 +1,232 @@
+{% extends "admin/admin_base_custom.html" %}
+
+{% block title %}Аналитика | QarStyle Admin{% endblock %}
+{% block page_title %}Аналитика{% endblock %}
+{% block page_subtitle %}Детальная статистика и отчёты{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen bg-[#f8f8f8]">
+    <main class="flex-1 p-8 space-y-6">
+        <!-- Summary KPIs -->
+        <div class="grid grid-cols-4 gap-3">
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <p class="text-xs text-black/40 mb-2">Общая выручка</p>
+                <p class="text-2xl text-black mb-1">{{ total_revenue|floatformat:"0" }} ₸</p>
+                <span class="text-xs text-emerald-600">+23.4% vs. прошлый год</span>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <p class="text-xs text-black/40 mb-2">Средний чек</p>
+                <p class="text-2xl text-black mb-1">{{ avg_check|floatformat:"0" }} ₸</p>
+                <span class="text-xs text-emerald-600">+8.2% vs. прошлый год</span>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <p class="text-xs text-black/40 mb-2">Конверсия</p>
+                <p class="text-2xl text-black mb-1">3.8%</p>
+                <span class="text-xs text-emerald-600">+0.4% vs. прошлый год</span>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <p class="text-xs text-black/40 mb-2">LTV клиента</p>
+                <p class="text-2xl text-black mb-1">1 240 000 ₸</p>
+                <span class="text-xs text-emerald-600">+15.1% vs. прошлый год</span>
+            </div>
+        </div>
+
+        <!-- Revenue + Orders -->
+        <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-2 bg-white rounded-2xl p-6 border border-black/5">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-black">Выручка и заказы</h2>
+                        <p class="text-xs text-black/40 mt-0.5">За текущий год</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-black/40">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-4 h-0.5 bg-black inline-block"></span> Выручка
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-4 h-0.5 bg-black/30 inline-block"></span> Заказы
+                        </span>
+                    </div>
+                </div>
+                <div class="h-[220px] w-full">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pie -->
+            <div class="bg-white rounded-2xl p-6 border border-black/5">
+                <div class="mb-4">
+                    <h2 class="text-black">Категории</h2>
+                    <p class="text-xs text-black/40 mt-0.5">Доля продаж</p>
+                </div>
+                <div class="h-[160px] w-full relative flex items-center justify-center">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                <div class="mt-3 space-y-1.5">
+                    {% for cat in categories_share %}
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full" style="background-color: {{ cat.color }}"></div>
+                            <span class="text-xs text-black/60">{{ cat.name }}</span>
+                        </div>
+                        <span class="text-xs text-black">{{ cat.percentage }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Cities + Conversion -->
+        <div class="grid grid-cols-2 gap-4">
+            <!-- City breakdown -->
+            <div class="bg-white rounded-2xl p-6 border border-black/5">
+                <div class="mb-6">
+                    <h2 class="text-black">По городам</h2>
+                    <p class="text-xs text-black/40 mt-0.5">Заказы и выручка</p>
+                </div>
+                <div class="space-y-3">
+                    {% for city in cities_data %}
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm text-black">{{ city.city|default:"Не указан" }}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-black/40">{{ city.order_count }} зак.</span>
+                                <span class="text-xs text-black">{% widthratio city.total 1000000 1 %} М ₸</span>
+                            </div>
+                        </div>
+                        <div class="h-1.5 bg-black/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-black rounded-full transition-all duration-500" style="width: {% widthratio city.order_count 547 100 %}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Weekly conversion -->
+            <div class="bg-white rounded-2xl p-6 border border-black/5">
+                <div class="mb-6">
+                    <h2 class="text-black">Трафик и конверсия</h2>
+                    <p class="text-xs text-black/40 mt-0.5">Последние 7 дней</p>
+                </div>
+                <div class="h-[200px] w-full">
+                    <canvas id="conversionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 1. Revenue & Orders Chart
+    const revCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revCtx, {
+        type: 'line',
+        data: {
+            labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+            datasets: [
+                {
+                    label: 'Выручка',
+                    data: [4200000, 3800000, 5100000, 4700000, 6200000, 5800000, 7100000, 6600000, 5900000, 7800000, 9200000, 8400000],
+                    borderColor: '#000',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Заказы',
+                    data: [89, 72, 104, 96, 128, 117, 145, 134, 121, 158, 187, 171],
+                    borderColor: '#00000040',
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    tension: 0.4,
+                    pointRadius: 0,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#00000060' } },
+                y: { 
+                    type: 'linear', display: true, position: 'left',
+                    grid: { color: '#00000008', drawBorder: false },
+                    ticks: { font: { size: 11 }, color: '#00000060', callback: function(val) { return (val / 1000000).toFixed(0) + 'M'; } }
+                },
+                y1: {
+                    type: 'linear', display: true, position: 'right',
+                    grid: { display: false },
+                    ticks: { font: { size: 11 }, color: '#00000060' }
+                }
+            }
+        }
+    });
+
+    // 2. Category Pie Chart
+    const catCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for c in categories_share %}'{{ c.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for c in categories_share %}{{ c.percentage }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [{% for c in categories_share %}'{{ c.color }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                borderWidth: 2,
+                borderColor: '#ffffff',
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // 3. Conversion Bar Chart
+    const convCtx = document.getElementById('conversionChart').getContext('2d');
+    new Chart(convCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+            datasets: [
+                {
+                    label: 'Посетители',
+                    data: [1240, 1080, 1560, 1320, 1840, 2100, 1680],
+                    backgroundColor: '#00000015',
+                    borderRadius: { topLeft: 3, topRight: 3, bottomLeft: 0, bottomRight: 0 },
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
+                },
+                {
+                    label: 'Заказы',
+                    data: [420, 360, 580, 480, 720, 890, 640], // Scaled up slightly for visibility compared to 2000 visitors
+                    backgroundColor: '#000',
+                    borderRadius: { topLeft: 3, topRight: 3, bottomLeft: 0, bottomRight: 0 },
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#00000060' } },
+                y: {
+                    grid: { color: '#00000008', drawBorder: false },
+                    ticks: { font: { size: 11 }, color: '#00000060' }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

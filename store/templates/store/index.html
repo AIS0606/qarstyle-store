@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QarStyle | Официальный сайт</title>
+  
+  <!-- Google Fonts: Inter as a replacement for Helvetica/San Francisco -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="{% static 'store/styles.css' %}?v=26">
+  
+  {% if request.GET.preview %}
+  <style>
+    /* Базовые стили для ВСЕХ блоков в режиме конструктора */
+    [data-block-id] {
+      min-height: 60px !important;
+      outline: 1px dashed #cbd5e1 !important; /* Светло-серая рамка всегда */
+      outline-offset: -1px;
+      position: relative;
+    }
+    
+    /* Если блок пустой (или почти пустой), добавляем серый фон */
+    [data-block-id]:empty, 
+    [data-block-id]:not(:has(*)) {
+      background-color: #f8fafc !important;
+    }
+
+    /* Подсветка пустых колонок сплит-баннера */
+    .banner-half {
+      min-height: 200px;
+    }
+    .banner-half:not([style*="background-image"]) {
+      background-color: #f1f5f9 !important;
+    }
+    .banner-half:not([style*="background-image"]) h2 {
+      color: #000 !important;
+    }
+
+    /* Для сетки товаров */
+    .products-grid {
+      min-height: 150px;
+    }
+    
+    /* Заглушка, если нет карточек. Используем :empty но с фиксом или просто height */
+    .products-grid:empty {
+      background-color: #f8fafc !important;
+      border: 2px dashed #cbd5e1 !important;
+    }
+  </style>
+  {% endif %}
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    БЕСПЛАТНАЯ ДОСТАВКА ПО КАЗАХСТАНУ ОТ 50 000 ₸ - ВОЗВРАТ 30 ДНЕЙ
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="hamburger" id="hamburger">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </div>
+      <a href="{% url 'index' %}" class="logo">
+        <img src="{% static 'store/QS.svg' %}" alt="QarStyle Logo">
+      </a>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="{% url 'catalog' %}?department=mens">Мужской</a>
+      <a href="{% url 'catalog' %}?department=womens">Женский</a>
+      <a href="{% url 'catalog' %}?department=kids">Детский</a>
+      <a href="{% url 'catalog' %}?department=bags-gear">Сумки и снаряжение</a>
+      <a href="{% url 'catalog' %}?sale=1">Распродажа</a>
+      <a href="{% url 'catalog' %}?resale=1">Перепродажа</a>
+      <a href="{% url 'about' %}">О нас</a>
+    </nav>
+
+    <div class="header-right">
+      <form class="search-bar" method="GET" action="{% url 'catalog' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Поиск" required>
+        <button type="submit" style="display:none;"></button>
+      </form>
+      <div class="icons">
+        <a href="{% url 'cart' %}" style="text-decoration: none; display: flex; align-items: center; position: relative;">
+          <img src="{% static 'store/image-2_1.svg' %}" alt="Cart" style="cursor: pointer;">
+          {% if cart_count > 0 %}
+          <span class="nav-badge">{{ cart_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'favorites' %}" class="header-fav-btn" aria-label="Избранное" style="text-decoration: none; display: flex; align-items: center; color: #000; position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          {% if favorites_count > 0 %}
+          <span class="nav-badge">{{ favorites_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}" style="text-decoration: none; display: flex; align-items: center; margin-left: 10px;">
+          <img src="{% static 'store/free-icon-user-5617164.svg' %}" alt="User" style="cursor: pointer; width: 24px; height: 24px;">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    {% for block in blocks %}
+      {% include block.get_template_name %}
+    {% endfor %}
+  </main>
+
+  <!-- Footer -->
+  {% include 'store/footer.html' %}
+
+  <script src="{% static 'store/script.js' %}"></script>
+  {% include 'store/ai_assistant.html' %}
+  <script>
+    function changeCardImage(swatchEl, colorId) {
+      const card = swatchEl.closest('.product-card');
+      if (!card) return;
+      const images = Array.from(card.querySelectorAll('.product-image'));
+      const activeImg = card.querySelector('.product-image.active');
+      const targetImg = images.find(img => img.getAttribute('data-color-id') === String(colorId));
+      
+      if (!targetImg || activeImg === targetImg) return;
+
+      targetImg.style.transition = 'opacity 0.3s ease-in-out';
+      targetImg.style.opacity = '1';
+      targetImg.style.transform = 'translateX(0)';
+      
+      if (activeImg) {
+          activeImg.style.transition = 'opacity 0.3s ease-in-out';
+          activeImg.style.opacity = '0';
+          setTimeout(() => {
+              activeImg.classList.remove('active');
+          }, 300);
+      }
+      targetImg.classList.add('active');
+      
+      const swatches = card.querySelectorAll('.swatch');
+      swatches.forEach(sw => sw.classList.remove('active'));
+      swatchEl.classList.add('active');
+    }
+
+    function animateSlide(btn, wrapper, activeImg, nextImg, direction) {
+      if (wrapper.dataset.isAnimating === 'true') return;
+      wrapper.dataset.isAnimating = 'true';
+
+      btn.style.transition = 'transform 0.15s ease-out';
+      btn.style.transform = 'translateY(-50%) scale(0.85)';
+      setTimeout(() => btn.style.transform = 'translateY(-50%) scale(1)', 150);
+
+      nextImg.style.transition = 'none';
+      nextImg.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+      nextImg.style.opacity = '1';
+      
+      void nextImg.offsetWidth; // Force reflow
+      
+      const transitionStr = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+      nextImg.style.transition = transitionStr;
+      activeImg.style.transition = transitionStr;
+      
+      nextImg.style.transform = 'translateX(0)';
+      activeImg.style.transform = direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
+      nextImg.classList.add('active');
+      
+      setTimeout(() => {
+        activeImg.classList.remove('active');
+        activeImg.style.opacity = '0';
+        activeImg.style.transform = 'translateX(0)';
+        wrapper.dataset.isAnimating = 'false';
+      }, 400);
+    }
+
+    function nextCardImage(btn) {
+      const wrapper = btn.closest('.image-wrapper');
+      const activeImg = wrapper.querySelector('.product-image.active');
+      if (!activeImg) return;
+      const colorId = activeImg.getAttribute('data-color-id');
+      const images = Array.from(wrapper.querySelectorAll('.product-image')).filter(img => img.getAttribute('data-color-id') === colorId);
+      
+      if (images.length <= 1) return;
+      const nextIndex = (images.indexOf(activeImg) + 1) % images.length;
+      animateSlide(btn, wrapper, activeImg, images[nextIndex], 'next');
+    }
+
+    function prevCardImage(btn) {
+      const wrapper = btn.closest('.image-wrapper');
+      const activeImg = wrapper.querySelector('.product-image.active');
+      if (!activeImg) return;
+      const colorId = activeImg.getAttribute('data-color-id');
+      const images = Array.from(wrapper.querySelectorAll('.product-image')).filter(img => img.getAttribute('data-color-id') === colorId);
+      
+      if (images.length <= 1) return;
+      const prevIndex = (images.indexOf(activeImg) - 1 + images.length) % images.length;
+      animateSlide(btn, wrapper, activeImg, images[prevIndex], 'prev');
+    }
+  </script>
+</body>
+</html>

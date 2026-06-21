@@ -1,0 +1,10 @@
+<section data-block-id="{{ block.id }}" {% if request.GET.preview and not block.is_active %}style="opacity: 0.4; outline: 2px dashed red;"{% endif %} class="split-banners">
+  <div class="banner-half left" {% if block.image_main %}style="background-image: url('{{ block.image_main.url }}');"{% endif %}>
+    {% if block.title %}<h2>{{ block.title }}</h2>{% endif %}
+    {% if block.button_link %}<a href="{{ block.button_link }}">{{ block.button_text }}</a>{% endif %}
+  </div>
+  <div class="banner-half right" {% if block.image_secondary %}style="background-image: url('{{ block.image_secondary.url }}');"{% endif %}>
+    {% if block.title_secondary %}<h2>{{ block.title_secondary }}</h2>{% endif %}
+    {% if block.button_link_secondary %}<a href="{{ block.button_link_secondary }}">{{ block.button_text_secondary }}</a>{% endif %}
+  </div>
+</section>

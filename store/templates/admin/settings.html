@@ -1,0 +1,427 @@
+{% extends "admin/admin_base_custom.html" %}
+
+{% block title %}Настройки | QarStyle Admin{% endblock %}
+{% block page_title %}Настройки{% endblock %}
+{% block page_subtitle %}Конфигурация магазина QarStyle{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen bg-[#f8f8f8]">
+    <main class="flex-1 p-8">
+        <div class="grid grid-cols-4 gap-6">
+            <!-- Tab sidebar -->
+            <div class="bg-white rounded-2xl border border-black/5 p-3 h-fit">
+                <button type="button" onclick="switchTab('store')" id="tab-btn-store" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors mb-0.5 bg-black text-white">
+                    <i data-lucide="store" class="tab-icon w-4 h-4 shrink-0 text-white"></i>
+                    <span class="text-sm">Магазин</span>
+                </button>
+                <button type="button" onclick="switchTab('shipping')" id="tab-btn-shipping" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors mb-0.5 text-black/50 hover:bg-black/5 hover:text-black">
+                    <i data-lucide="truck" class="tab-icon w-4 h-4 shrink-0 text-black/30"></i>
+                    <span class="text-sm">Доставка</span>
+                </button>
+                <button type="button" onclick="switchTab('payments')" id="tab-btn-payments" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors mb-0.5 text-black/50 hover:bg-black/5 hover:text-black">
+                    <i data-lucide="credit-card" class="tab-icon w-4 h-4 shrink-0 text-black/30"></i>
+                    <span class="text-sm">Оплата</span>
+                </button>
+                <button type="button" onclick="switchTab('notifications')" id="tab-btn-notifications" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors mb-0.5 text-black/50 hover:bg-black/5 hover:text-black">
+                    <i data-lucide="bell" class="tab-icon w-4 h-4 shrink-0 text-black/30"></i>
+                    <span class="text-sm">Уведомления</span>
+                </button>
+                <button type="button" onclick="switchTab('security')" id="tab-btn-security" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors mb-0.5 text-black/50 hover:bg-black/5 hover:text-black">
+                    <i data-lucide="shield" class="tab-icon w-4 h-4 shrink-0 text-black/30"></i>
+                    <span class="text-sm">Безопасность</span>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="col-span-3 space-y-4 relative min-h-[500px]">
+                
+                <!-- Store Settings Tab -->
+                <div id="tab-store" class="tab-content block space-y-4">
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <h2 class="text-black mb-6">Основная информация</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs text-black/40 block mb-1.5">Название магазина</label>
+                                    <input type="text" value="QarStyle" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-black/40 block mb-1.5">Email</label>
+                                    <input type="email" value="info@qarstyle.kz" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" />
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs text-black/40 block mb-1.5">Телефон</label>
+                                    <input type="tel" value="+7 (727) 123-45-67" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-black/40 block mb-1.5">Сайт</label>
+                                    <input type="url" value="https://qarstyle.kz" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Адрес</label>
+                                <input type="text" value="г. Алматы, ул. Панфилова 98" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <div class="flex items-center gap-2 mb-6">
+                            <i data-lucide="globe" class="w-4 h-4 text-black/40"></i>
+                            <h2 class="text-black">Локализация</h2>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Валюта</label>
+                                <select class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none appearance-none">
+                                    <option>Тенге (₸)</option>
+                                    <option>USD ($)</option>
+                                    <option>RUB (₽)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Язык</label>
+                                <select class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none appearance-none">
+                                    <option>Русский</option>
+                                    <option>Қазақша</option>
+                                    <option>English</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Часовой пояс</label>
+                                <select class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none appearance-none">
+                                    <option>UTC+5 (Алматы)</option>
+                                    <option>UTC+6 (Астана)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Settings Tab -->
+                <div id="tab-shipping" class="tab-content hidden">
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <h2 class="text-black mb-6">Условия доставки</h2>
+                        <div class="space-y-4">
+                            <!-- Standard -->
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Стандартная доставка</p>
+                                    <p class="text-xs text-black/40 mt-0.5">3-5 дней</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-sm text-black">2 000 ₸</span>
+                                    <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Express -->
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Экспресс доставка</p>
+                                    <p class="text-xs text-black/40 mt-0.5">1-2 дня</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-sm text-black">5 000 ₸</span>
+                                    <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pickup -->
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Самовывоз</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Сегодня</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-sm text-black">Бесплатно</span>
+                                    <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- International -->
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Международная доставка</p>
+                                    <p class="text-xs text-black/40 mt-0.5">7-14 дней</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-sm text-black">15 000 ₸</span>
+                                    <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black/20 toggle-switch off" onclick="toggleSwitch(this)">
+                                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-0.5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-4 bg-black/[0.02] rounded-xl">
+                            <p class="text-sm text-black mb-1">Бесплатная доставка от:</p>
+                            <div class="flex items-center gap-3">
+                                <input type="number" value="50000" class="bg-white rounded-xl px-4 py-2 text-sm text-black outline-none border border-black/10 w-36" />
+                                <span class="text-sm text-black/40">₸</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payments Tab -->
+                <div id="tab-payments" class="tab-content hidden">
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <h2 class="text-black mb-6">Способы оплаты</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg">💳</span>
+                                    <div>
+                                        <p class="text-sm text-black">Kaspi Pay</p>
+                                        <p class="text-xs text-black/40 toggle-text">Подключено</p>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitchText(this, 'Подключено', 'Не подключено')">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg">💳</span>
+                                    <div>
+                                        <p class="text-sm text-black">Visa / Mastercard</p>
+                                        <p class="text-xs text-black/40 toggle-text">Подключено</p>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitchText(this, 'Подключено', 'Не подключено')">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg">💵</span>
+                                    <div>
+                                        <p class="text-sm text-black">Наличными при получении</p>
+                                        <p class="text-xs text-black/40 toggle-text">Подключено</p>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitchText(this, 'Подключено', 'Не подключено')">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg">🌐</span>
+                                    <div>
+                                        <p class="text-sm text-black">PayPal</p>
+                                        <p class="text-xs text-black/40 toggle-text">Не подключено</p>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black/20 toggle-switch off" onclick="toggleSwitchText(this, 'Подключено', 'Не подключено')">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-0.5"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg">🏦</span>
+                                    <div>
+                                        <p class="text-sm text-black">Halyk Bank</p>
+                                        <p class="text-xs text-black/40 toggle-text">Не подключено</p>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black/20 toggle-switch off" onclick="toggleSwitchText(this, 'Подключено', 'Не подключено')">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-0.5"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Tab -->
+                <div id="tab-notifications" class="tab-content hidden">
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <h2 class="text-black mb-6">Настройки уведомлений</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Новые заказы</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Мгновенные уведомления о новых заказах</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Изменение статуса</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Уведомления об изменении статуса заказа</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Низкий остаток</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Когда товар заканчивается на складе</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Новые клиенты</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Регистрация нового пользователя</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black/20 toggle-switch off" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-0.5"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Отменённые заказы</p>
+                                    <p class="text-xs text-black/40 mt-0.5">При отмене заказа клиентом</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black toggle-switch" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Ежедневный отчёт</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Сводка за день на email</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black/20 toggle-switch off" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-0.5"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Tab -->
+                <div id="tab-security" class="tab-content hidden">
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <h2 class="text-black mb-6">Безопасность</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Текущий пароль</label>
+                                <input type="password" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" placeholder="••••••••" />
+                            </div>
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Новый пароль</label>
+                                <input type="password" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" placeholder="••••••••" />
+                            </div>
+                            <div>
+                                <label class="text-xs text-black/40 block mb-1.5">Подтвердите пароль</label>
+                                <input type="password" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors" placeholder="••••••••" />
+                            </div>
+                            <div class="pt-2 flex items-center justify-between p-4 bg-black/[0.02] rounded-xl">
+                                <div>
+                                    <p class="text-sm text-black">Двухфакторная аутентификация</p>
+                                    <p class="text-xs text-black/40 mt-0.5">Дополнительный уровень защиты</p>
+                                </div>
+                                <div class="w-10 h-5 rounded-full relative cursor-pointer transition-colors bg-black/20 toggle-switch off" onclick="toggleSwitch(this)">
+                                    <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-0.5"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save button -->
+                <div class="flex justify-end mt-4 absolute -bottom-14 right-0">
+                    <button id="save-btn" onclick="handleSave()" class="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm transition-all bg-black text-white hover:bg-black/80">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span id="save-btn-text">Сохранить</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+    function switchTab(tabId) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        
+        // Show selected tab
+        const selectedTab = document.getElementById('tab-' + tabId);
+        if(selectedTab) {
+            selectedTab.classList.remove('hidden');
+            selectedTab.classList.add('block');
+        }
+
+        // Reset all buttons styling
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('bg-black', 'text-white');
+            btn.classList.add('text-black/50');
+            
+            const icon = btn.querySelector('.tab-icon');
+            icon.classList.remove('text-white');
+            icon.classList.add('text-black/30');
+        });
+
+        // Add styling to selected button
+        const btn = document.getElementById('tab-btn-' + tabId);
+        if(btn) {
+            btn.classList.remove('text-black/50');
+            btn.classList.add('bg-black', 'text-white');
+            
+            const icon = btn.querySelector('.tab-icon');
+            icon.classList.remove('text-black/30');
+            icon.classList.add('text-white');
+        }
+    }
+
+    function toggleSwitch(element) {
+        const knob = element.querySelector('div');
+        if (element.classList.contains('off')) {
+            element.classList.remove('off', 'bg-black/20');
+            element.classList.add('bg-black');
+            knob.classList.remove('left-0.5');
+            knob.classList.add('left-[22px]');
+        } else {
+            element.classList.add('off', 'bg-black/20');
+            element.classList.remove('bg-black');
+            knob.classList.add('left-0.5');
+            knob.classList.remove('left-[22px]');
+        }
+    }
+
+    function toggleSwitchText(element, onText, offText) {
+        toggleSwitch(element);
+        const textElement = element.parentElement.querySelector('.toggle-text');
+        if (textElement) {
+            if (element.classList.contains('off')) {
+                textElement.innerText = offText;
+            } else {
+                textElement.innerText = onText;
+            }
+        }
+    }
+
+    function handleSave() {
+        const btn = document.getElementById('save-btn');
+        const text = document.getElementById('save-btn-text');
+        
+        btn.classList.remove('bg-black', 'hover:bg-black/80');
+        btn.classList.add('bg-emerald-500');
+        text.innerText = "Сохранено!";
+
+        setTimeout(() => {
+            btn.classList.remove('bg-emerald-500');
+            btn.classList.add('bg-black', 'hover:bg-black/80');
+            text.innerText = "Сохранить";
+        }, 2000);
+    }
+</script>
+{% endblock %}

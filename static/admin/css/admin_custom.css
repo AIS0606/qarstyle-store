@@ -1,0 +1,186 @@
+/* Modern Admin Panel Design */
+:root {
+    --primary-color: #000000;
+    --sidebar-bg: #000000;
+    --content-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-main: #1a1a1a;
+    --text-muted: #6c757d;
+    --accent-blue: #007bff;
+    --accent-green: #28a745;
+    --accent-red: #dc3545;
+    --border-radius: 12px;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--content-bg);
+    color: var(--text-main);
+}
+
+/* Sidebar Styling */
+.main-sidebar {
+    background-color: var(--sidebar-bg) !important;
+    border-right: none !important;
+}
+
+.nav-sidebar .nav-item .nav-link {
+    border-radius: 8px;
+    margin: 4px 12px;
+    padding: 10px 16px;
+    color: rgba(255, 255, 255, 0.7) !important;
+    transition: all 0.3s ease;
+}
+
+.nav-sidebar .nav-item .nav-link:hover, 
+.nav-sidebar .nav-item .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+.brand-link {
+    background-color: var(--sidebar-bg) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 20px !important;
+}
+
+.brand-text {
+    font-weight: 700 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Header / Navbar */
+.main-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #edf2f7 !important;
+    padding: 12px 24px !important;
+}
+
+.navbar-search-block {
+    background: transparent !important;
+}
+
+.form-control-navbar {
+    background-color: #f1f4f8 !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 20px !important;
+}
+
+/* Dashboard Cards */
+.card {
+    border: none !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-bottom: 24px;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid #f1f4f8 !important;
+    padding: 16px 24px !important;
+}
+
+.card-title {
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+}
+
+/* Stats Cards */
+.info-box {
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    padding: 20px !important;
+    border: none !important;
+}
+
+.info-box-icon {
+    border-radius: 10px !important;
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.info-box-content {
+    padding-left: 15px !important;
+}
+
+.info-box-number {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+}
+
+.info-box-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: none !important;
+}
+
+/* Tables */
+.table {
+    margin-bottom: 0 !important;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-top: none !important;
+    border-bottom: 1px solid #edf2f7 !important;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    padding: 12px 24px !important;
+}
+
+.table tbody td {
+    padding: 16px 24px !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f4f8 !important;
+}
+
+/* Badges */
+.badge {
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    font-size: 0.8rem !important;
+}
+
+.badge-success { background-color: #e6f4ea !important; color: #1e7e34 !important; }
+.badge-warning { background-color: #fff4e5 !important; color: #b7791f !important; }
+.badge-danger { background-color: #fce8e8 !important; color: #c53030 !important; }
+.badge-info { background-color: #e1f5fe !important; color: #01579b !important; }
+
+/* Custom Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+/* Chart Containers */
+.chart-container {
+    padding: 20px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}

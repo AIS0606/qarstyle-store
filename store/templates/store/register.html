@@ -1,0 +1,234 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация - QarStyle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+    .split-auth-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .auth-left {
+      width: 45%;
+      padding: 5% 8%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-logo {
+      margin-bottom: 80px;
+    }
+    .auth-logo img {
+      height: 80px;
+    }
+    .auth-content {
+      max-width: 400px;
+      width: 100%;
+    }
+    .auth-heading {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+    .zara-input-group {
+      position: relative;
+      margin-bottom: 30px;
+    }
+    .zara-input-group input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #d1d1d1;
+      padding: 10px 0;
+      font-size: 11px;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      background: transparent;
+      box-sizing: border-box;
+    }
+    .zara-input-group input:focus {
+      border-bottom: 1px solid #000;
+    }
+    .zara-input-group label {
+      position: absolute;
+      left: 0;
+      top: 10px;
+      font-size: 11px;
+      color: #767676;
+      transition: 0.2s ease all;
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+    .zara-input-group input:focus ~ label,
+    .zara-input-group input:not(:placeholder-shown) ~ label {
+      top: -15px;
+      font-size: 9px;
+      color: #000;
+    }
+    .zara-input-group .helptext {
+      font-size: 9px;
+      color: #999;
+      margin-top: 5px;
+      display: block;
+      text-transform: uppercase;
+    }
+    .zara-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #000;
+      background: transparent;
+      color: #000;
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 40px;
+      letter-spacing: 0.5px;
+    }
+    .zara-btn:hover {
+      background: #000;
+      color: #fff;
+    }
+    .auth-divider {
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: #000;
+    }
+    .zara-social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e5e5e5;
+      background: #fff;
+      color: #000;
+      font-size: 10px;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: border 0.3s;
+      box-sizing: border-box;
+      letter-spacing: 0.5px;
+    }
+    .zara-social-btn:hover {
+      border-color: #000;
+    }
+    .zara-social-btn img {
+      width: 14px;
+      margin-right: 10px;
+    }
+    .auth-footer-links {
+      margin-top: 60px;
+      font-size: 10px;
+    }
+    .auth-footer-links a {
+      color: #000;
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-right: 20px;
+      letter-spacing: 0.5px;
+    }
+    .auth-right {
+      width: 55%;
+      background-image: url('{% static "store/Frame 4.jpg" %}'); /* Using a different image for register */
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .auth-messages { margin-bottom: 20px; }
+    .auth-message { padding: 10px; font-size: 11px; text-transform: uppercase; border: 1px solid; margin-bottom: 10px; }
+    .auth-message.error { color: #d0021b; border-color: #d0021b; }
+    .auth-message.success { color: #000; border-color: #000; }
+
+    @media (max-width: 768px) {
+      .split-auth-container { flex-direction: column; }
+      .auth-left { width: 100%; padding: 40px 20px; }
+      .auth-right { display: none; }
+      .auth-logo img { height: 50px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-auth-container">
+    <div class="auth-left">
+      <div class="auth-logo">
+        <a href="{% url 'index' %}">
+          <svg viewBox="0 0 100 30" style="height: 60px; fill: #000;">
+            <text x="0" y="25" font-family="Inter" font-weight="800" font-size="28" letter-spacing="-1px">QarStyle</text>
+          </svg>
+        </a>
+      </div>
+
+      <div class="auth-content">
+        <h1 class="auth-heading">ВОЙДИТЕ ИЛИ ЗАРЕГИСТРИРУЙТЕСЬ</h1>
+        
+        {% if messages %}
+          <div class="auth-messages">
+            {% for message in messages %}
+              <div class="auth-message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="POST">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="zara-input-group">
+              {{ field }}
+              <label for="{{ field.id_for_label }}">{{ field.label|upper }}</label>
+              {% if field.help_text %}
+                <span class="helptext">{{ field.help_text }}</span>
+              {% endif %}
+              {% for error in field.errors %}
+                <div style="color:#d0021b; font-size:9px; margin-top:5px; text-transform:uppercase;">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          
+          <button type="submit" class="zara-btn">СОЗДАТЬ АККАУНТ</button>
+        </form>
+
+        <div class="auth-divider">ДОСТУП С</div>
+
+        <form method="post" action="{% provider_login_url 'google' %}">
+          {% csrf_token %}
+          <button type="submit" class="zara-social-btn" style="cursor: pointer; font-family: 'Inter', sans-serif;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+            ПРОДОЛЖИТЬ С GOOGLE
+          </button>
+        </form>
+
+        <div class="auth-footer-links">
+          <a href="#">СПРАВКА</a>
+          <a href="{% url 'login' %}">ВОЙТИ В АККАУНТ</a>
+        </div>
+      </div>
+    </div>
+    <div class="auth-right"></div>
+  </div>
+
+  <script>
+    // Add placeholder to inputs so the CSS :placeholder-shown selector works
+    document.querySelectorAll('.zara-input-group input').forEach(input => {
+      input.placeholder = " ";
+    });
+  </script>
+</body>
+</html>

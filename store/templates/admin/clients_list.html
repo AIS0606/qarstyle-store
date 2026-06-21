@@ -1,0 +1,157 @@
+{% extends "admin/admin_base_custom.html" %}
+
+{% block title %}Клиенты | QarStyle Admin{% endblock %}
+{% block page_title %}Клиенты{% endblock %}
+{% block page_subtitle %}База клиентов магазина QarStyle{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen bg-[#f8f8f8]">
+    <main class="flex-1 p-8 space-y-6">
+        <!-- KPI -->
+        <div class="grid grid-cols-4 gap-4">
+            <div class="bg-white rounded-2xl p-6 border border-black/5 col-span-1">
+                <p class="text-xs text-black/40 mb-1">Всего клиентов</p>
+                <p class="text-3xl text-black mb-3">{{ total }}</p>
+                <div class="flex items-center gap-1 text-xs text-emerald-600">
+                    <i data-lucide="trending-up" class="w-3 h-3"></i>
+                    <span>+5.3% в этом месяце</span>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 border border-black/5">
+                <p class="text-xs text-black/40 mb-1">VIP клиенты</p>
+                <p class="text-3xl text-black">{{ vip_count }}</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-black/5">
+                <p class="text-xs text-black/40 mb-1">Постоянные</p>
+                <p class="text-3xl text-black/60">{{ regular_count }}</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-black/5">
+                <p class="text-xs text-black/40 mb-1">Обычные</p>
+                <p class="text-3xl text-black/40">{{ normal_count }}</p>
+            </div>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="bg-white rounded-2xl border border-black/5">
+            <div class="flex items-center gap-3 p-5 border-b border-black/5">
+                <div class="flex items-center gap-2 bg-black/5 rounded-full px-4 py-2 flex-1 max-w-xs">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-black/40 shrink-0"></i>
+                    <input type="text" placeholder="Поиск клиента..." class="bg-transparent text-sm text-black placeholder:text-black/40 outline-none w-full" />
+                </div>
+
+                <div class="flex gap-1">
+                    <button class="px-3 py-1.5 rounded-full text-xs transition-colors bg-black text-white">Все</button>
+                    <button class="px-3 py-1.5 rounded-full text-xs transition-colors bg-black/5 text-black/50 hover:bg-black/10">VIP</button>
+                    <button class="px-3 py-1.5 rounded-full text-xs transition-colors bg-black/5 text-black/50 hover:bg-black/10">Постоянный</button>
+                    <button class="px-3 py-1.5 rounded-full text-xs transition-colors bg-black/5 text-black/50 hover:bg-black/10">Обычный</button>
+                    <button class="px-3 py-1.5 rounded-full text-xs transition-colors bg-black/5 text-black/50 hover:bg-black/10">Новый</button>
+                </div>
+
+                <button class="ml-auto flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors">
+                    <i data-lucide="user-plus" class="w-3 h-3"></i> Добавить
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-black/5">
+                            <th class="text-left text-xs text-black/30 font-normal px-5 py-3">Клиент</th>
+                            <th class="text-left text-xs text-black/30 font-normal px-3 py-3">Контакты</th>
+                            <th class="text-left text-xs text-black/30 font-normal px-3 py-3">Город</th>
+                            <th class="text-left text-xs text-black/30 font-normal px-3 py-3">Уровень</th>
+                            <th class="text-left text-xs text-black/30 font-normal px-3 py-3">Заказы</th>
+                            <th class="text-left text-xs text-black/30 font-normal px-3 py-3">Последний</th>
+                            <th class="text-right text-xs text-black/30 font-normal px-5 py-3">Сумма</th>
+                            <th class="px-5 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-black/5">
+                        {% for client in clients %}
+                        <tr class="hover:bg-black/[0.02] transition-colors group">
+                            <td class="px-5 py-3.5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center shrink-0">
+                                        <span class="text-white text-xs">
+                                            {% if client.first_name %}{{ client.first_name|slice:":1" }}{% endif %}
+                                            {% if client.last_name %}{{ client.last_name|slice:":1" }}{% endif %}
+                                            {% if not client.first_name and not client.last_name %}{{ client.username|slice:":2"|upper }}{% endif %}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-black">
+                                            {% if client.first_name or client.last_name %}
+                                                {{ client.first_name }} {{ client.last_name }}
+                                            {% else %}
+                                                {{ client.username }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-xs text-black/30">{% if client.is_active %}Активный{% else %}Неактивный{% endif %}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-3 py-3.5">
+                                <div class="flex flex-col gap-0.5">
+                                    <div class="flex items-center gap-1.5">
+                                        <i data-lucide="mail" class="w-3 h-3 text-black/30"></i>
+                                        <span class="text-xs text-black/50">{{ client.email|default:"Нет email" }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <i data-lucide="phone" class="w-3 h-3 text-black/30"></i>
+                                        <span class="text-xs text-black/50">{{ client.phone }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-3 py-3.5">
+                                <span class="text-sm text-black/60">{{ client.city }}</span>
+                            </td>
+                            <td class="px-3 py-3.5">
+                                <span class="text-xs px-2.5 py-1 rounded-full 
+                                    {% if client.tier == 'VIP' %}bg-black text-white
+                                    {% elif client.tier == 'Постоянный' %}bg-black/10 text-black
+                                    {% elif client.tier == 'Обычный' %}bg-black/5 text-black/60
+                                    {% else %}bg-blue-50 text-blue-600{% endif %}">
+                                    {{ client.tier }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-3.5">
+                                <span class="text-sm text-black">{{ client.orders_count }}</span>
+                            </td>
+                            <td class="px-3 py-3.5">
+                                <span class="text-xs text-black/40">
+                                    {% if client.last_order %}{{ client.last_order|date:"d M Y" }}{% else %}-{% endif %}
+                                </span>
+                            </td>
+                            <td class="px-5 py-3.5 text-right">
+                                <span class="text-sm text-black">{{ client.total_spent|floatformat:"0" }} ₸</span>
+                            </td>
+                            <td class="px-5 py-3.5">
+                                <button class="opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center ml-auto">
+                                    <i data-lucide="more-horizontal" class="w-3.5 h-3.5 text-black/40"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-6 text-sm text-black/40">Нет клиентов</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-between px-5 py-4 border-t border-black/5">
+                <span class="text-xs text-black/30">Показано {{ clients|length }} из {{ total }} клиентов</span>
+                <div class="flex gap-1">
+                    <button class="w-7 h-7 rounded-full text-xs transition-colors bg-black text-white">1</button>
+                    <button class="w-7 h-7 rounded-full text-xs transition-colors text-black/40 hover:bg-black/5">2</button>
+                    <button class="w-7 h-7 rounded-full text-xs transition-colors text-black/40 hover:bg-black/5">3</button>
+                    <button class="w-7 h-7 rounded-full text-xs transition-colors text-black/40 hover:bg-black/5">...</button>
+                    <button class="w-7 h-7 rounded-full text-xs transition-colors text-black/40 hover:bg-black/5">23</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

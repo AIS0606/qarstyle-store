@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оформление заказа - QarStyle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'store/styles.css' %}?v=21">
+  <style>
+    body {
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+    .form-control {
+        background: #fff;
+        border: 1px solid #ddd;
+        color: #000;
+        border-radius: 8px;
+        padding: 12px 15px;
+    }
+    .form-control:focus {
+        border-color: #000;
+        box-shadow: none;
+    }
+    #id_phone {
+        background-color: #f1f3f5 !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #333 !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.2s ease !important;
+    }
+    #id_phone::placeholder {
+        color: #adb5bd !important;
+        font-weight: 500 !important;
+    }
+    #id_phone:focus {
+        background-color: #e9ecef !important;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05) !important;
+        outline: none !important;
+        color: #000 !important;
+    }
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #333;
+        font-size: 14px;
+    }
+    .checkout-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    БЕСПЛАТНАЯ ДОСТАВКА ПО КАЗАХСТАНУ ОТ 50 000 ₸ - ВОЗВРАТ 30 ДНЕЙ
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="hamburger" id="hamburger">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </div>
+      <a href="{% url 'index' %}" class="logo">
+        <img src="{% static 'store/QS.svg' %}" alt="QarStyle Logo">
+      </a>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="{% url 'catalog' %}?department=mens">Мужской</a>
+      <a href="{% url 'catalog' %}?department=womens">Женский</a>
+      <a href="{% url 'catalog' %}?department=kids">Детский</a>
+      <a href="{% url 'catalog' %}?department=bags-gear">Сумки и снаряжение</a>
+      <a href="{% url 'catalog' %}?sale=1">Распродажа</a>
+      <a href="{% url 'catalog' %}?resale=1">Перепродажа</a>
+      <a href="{% url 'about' %}">О нас</a>
+    </nav>
+
+    <div class="header-right">
+      <form class="search-bar" method="GET" action="{% url 'catalog' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Поиск" required>
+        <button type="submit" style="display:none;"></button>
+      </form>
+      <div class="icons">
+        <a href="{% url 'cart' %}" style="text-decoration: none; display: flex; align-items: center; position: relative;">
+          <img src="{% static 'store/image-2_1.svg' %}" alt="Cart" style="cursor: pointer;">
+          {% if cart_count > 0 %}
+          <span class="nav-badge">{{ cart_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'favorites' %}" class="header-fav-btn" aria-label="Избранное" style="text-decoration: none; display: flex; align-items: center; color: #000; position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          {% if favorites_count > 0 %}
+          <span class="nav-badge">{{ favorites_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}" style="text-decoration: none; display: flex; align-items: center; margin-left: 10px;">
+          <img src="{% static 'store/free-icon-user-5617164.svg' %}" alt="User" style="cursor: pointer; width: 24px; height: 24px;">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container py-5">
+    <div class="row g-5">
+        <!-- Форма заказа -->
+        <div class="col-md-7 col-lg-8">
+            <div class="checkout-card">
+                <h4 class="mb-4 fw-bold">Данные получателя</h4>
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Ошибка оформления:</strong> Пожалуйста, проверьте правильность заполнения всех полей.
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="id_first_name" class="form-label">Имя *</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="id_last_name" class="form-label">Фамилия *</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_email" class="form-label">Email *</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_phone" class="form-label">Телефон *</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_city" class="form-label">Город *</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_address" class="form-label">Адрес доставки *</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_payment_method" class="form-label">Способ оплаты *</label>
+                            {{ form.payment_method }}
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <button class="w-100 btn btn-dark btn-lg" type="submit" style="background:#000; border-radius: 8px;">Подтвердить заказ</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Блок с товарами -->
+        <div class="col-md-5 col-lg-4">
+            <div class="checkout-card" style="background: #f9f9f9; box-shadow: none; border: 1px solid #eee;">
+                <h4 class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="fw-bold">Ваш заказ</span>
+                    <span class="badge bg-dark rounded-pill">{{ cart|length }}</span>
+                </h4>
+                <ul class="list-group mb-3 border-0">
+                    {% for pid, item in cart.items %}
+                    <li class="list-group-item d-flex justify-content-between lh-sm bg-transparent border-bottom px-0">
+                        <div>
+                            <h6 class="my-0" style="font-size: 14px;">{{ item.name }}</h6>
+                            <small class="text-muted" style="display:block;">
+                              Цвет: {{ item.color_name|default:"Оригинал" }}, Размер: {{ item.size|default:"Не указан" }}
+                            </small>
+                            <small class="text-muted">Кол-во: {{ item.quantity }}</small>
+                        </div>
+                        <span class="text-dark fw-bold" style="font-size: 14px;">{{ item.price }} ₸</span>
+                    </li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex justify-content-between bg-transparent border-0 px-0 pt-3">
+                        <span class="text-muted">Доставка</span>
+                        <span class="fw-bold">Бесплатно</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between bg-transparent border-0 px-0 pt-2">
+                        <span class="fw-bold fs-5">Итого:</span>
+                        <strong class="fs-5">{{ total_price }} ₸</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  {% include 'store/footer.html' %}
+
+  <script src="{% static 'store/script.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const phoneInput = document.getElementById('id_phone');
+      if (phoneInput) {
+        // Set placeholder if not set
+        if (!phoneInput.getAttribute('placeholder')) {
+          phoneInput.setAttribute('placeholder', '+7 (777) 123-45-67');
+        }
+
+        phoneInput.addEventListener('input', function(e) {
+          let inputVal = phoneInput.value;
+          let cleaned = inputVal.replace(/[^\d+]/g, '');
+          
+          if (cleaned.startsWith('+8')) {
+            cleaned = '+7' + cleaned.substring(2);
+          }
+          if (cleaned.startsWith('8')) {
+            cleaned = '+7' + cleaned.substring(1);
+          }
+          if (cleaned.startsWith('7') && !inputVal.startsWith('+')) {
+            cleaned = '+7' + cleaned.substring(1);
+          }
+          if (!cleaned.startsWith('+')) {
+            if (cleaned.length > 0) {
+              cleaned = '+7' + cleaned;
+            } else {
+              cleaned = '';
+            }
+          }
+          
+          let digits = cleaned.replace(/\D/g, '');
+          let localDigits = '';
+          
+          if (digits.startsWith('7')) {
+            if (digits.length > 1) {
+              let secondChar = digits.charAt(1);
+              if (secondChar === '7' || secondChar === '6') {
+                localDigits = digits.substring(1);
+              } else {
+                localDigits = digits;
+              }
+            } else {
+              localDigits = '';
+            }
+          } else {
+            localDigits = digits;
+          }
+          
+          let formatted = '+7';
+          if (localDigits.length > 0) {
+            formatted += ' (' + localDigits.substring(0, 3);
+          }
+          if (localDigits.length > 3) {
+            formatted += ') ' + localDigits.substring(3, 6);
+          }
+          if (localDigits.length > 6) {
+            formatted += '-' + localDigits.substring(6, 8);
+          }
+          if (localDigits.length > 8) {
+            formatted += '-' + localDigits.substring(8, 10);
+          }
+          
+          // Only update value if there's any input
+          if (cleaned.length > 0) {
+            phoneInput.value = formatted;
+          } else {
+            phoneInput.value = '';
+          }
+        });
+
+        // Add a check on keydown to prevent deleting the country code if they want to clear
+        phoneInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Backspace' && phoneInput.value === '+7') {
+            phoneInput.value = '';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

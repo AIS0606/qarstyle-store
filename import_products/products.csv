@@ -1,0 +1,4 @@
+name,department,category,price,description,is_sale,is_resale,main_image,colors,sizes_stock
+"Rainforest Summer Jacket","mens","jackets","101000","Лёгкая ветровка из нейлона. Водоотталкивающая пропитка. Регулируемый капюшон.","no","no","rainforest_jacket_blue.jpg","Blue:#1A3A6E|Black:#000000","XS:2|S:3|M:5|L:4|XL:2"
+"Mountain Light Jacket","mens","jackets","149000","Утеплённая куртка для горных прогулок. Материал: переработанный нейлон.","yes","no","mountain_light_black.jpg","Black:#000000|Green:#2D4A2D","S:1|M:3|L:2|XL:1"
+"Skidoo Open Jacket","womens","jackets","135000","Культовая куртка Skidoo. Яркий дизайн, тёплый утеплитель.","no","no","skidoo_red.jpg","Red:#CC0000|Orange:#E85D04","XS:2|S:4|M:3|L:1"

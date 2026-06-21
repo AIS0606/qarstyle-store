@@ -1,0 +1,279 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Избранное - QarStyle</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'store/styles.css' %}?v=21">
+  <style>
+    .favorites-page {
+      padding: 60px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .favorites-header {
+      margin-bottom: 40px;
+    }
+    .favorites-header h1 {
+      font-size: 28px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .favorites-count {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .favorite-card {
+      position: relative;
+    }
+    .favorite-card img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      background: #f5f5f5;
+      margin-bottom: 15px;
+    }
+    .favorite-card-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .favorite-card-title {
+      flex-grow: 1;
+    }
+    .favorite-card-title h3 {
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .favorite-card-title a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .favorite-card-title a:hover {
+      text-decoration: underline;
+    }
+    .favorite-card-price {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .favorite-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .add-to-cart-btn {
+      flex: 1;
+      padding: 10px;
+      background: #000;
+      color: #fff;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .add-to-cart-btn:hover {
+      background: #333;
+    }
+    .remove-btn {
+      padding: 10px 15px;
+      background: #f5f5f5;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .remove-btn:hover {
+      background: #e5e5e5;
+    }
+    .favorites-empty {
+      text-align: center;
+      padding: 80px 40px;
+    }
+    .favorites-empty h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .favorites-empty p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+    .continue-shopping {
+      display: inline-block;
+      padding: 15px 40px;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: background 0.2s;
+    }
+    .continue-shopping:hover {
+      background: #333;
+    }
+
+    @media (max-width: 1024px) {
+      .favorites-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .favorites-page {
+        padding: 30px 20px;
+      }
+      .favorites-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .favorites-empty {
+        padding: 40px 20px;
+      }
+      .favorites-empty h2 {
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .favorites-grid {
+        grid-template-columns: 1fr;
+      }
+      .favorites-header h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    БЕСПЛАТНАЯ ДОСТАВКА ПО КАЗАХСТАНУ ОТ 50 000 ₸ - ВОЗВРАТ 30 ДНЕЙ
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="hamburger" id="hamburger">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </div>
+      <a href="{% url 'index' %}" class="logo">
+        <img src="{% static 'store/QS.svg' %}" alt="QarStyle Logo">
+      </a>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="{% url 'catalog' %}?department=mens">Мужской</a>
+      <a href="{% url 'catalog' %}?department=womens">Женский</a>
+      <a href="{% url 'catalog' %}?department=kids">Детский</a>
+      <a href="{% url 'catalog' %}?department=bags-gear">Сумки и снаряжение</a>
+      <a href="{% url 'catalog' %}?sale=1">Распродажа</a>
+      <a href="{% url 'catalog' %}?resale=1">Перепродажа</a>
+      <a href="{% url 'about' %}">О нас</a>
+    </nav>
+
+    <div class="header-right">
+      <form class="search-bar" method="GET" action="{% url 'catalog' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Поиск" required>
+        <button type="submit" style="display:none;"></button>
+      </form>
+      <div class="icons">
+        <a href="{% url 'cart' %}" style="text-decoration: none; display: flex; align-items: center; position: relative;">
+          <img src="{% static 'store/image-2_1.svg' %}" alt="Cart" style="cursor: pointer;">
+          {% if cart_count > 0 %}
+          <span class="nav-badge">{{ cart_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'favorites' %}" class="header-fav-btn active" aria-label="Избранное" style="text-decoration: none; display: flex; align-items: center; color: #000; position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          {% if favorites_count > 0 %}
+          <span class="nav-badge">{{ favorites_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}" style="text-decoration: none; display: flex; align-items: center; margin-left: 10px;">
+          <img src="{% static 'store/free-icon-user-5617164.svg' %}" alt="User" style="cursor: pointer; width: 24px; height: 24px;">
+        </a>
+      </div>
+    </div>
+  </header>
+
+
+
+  <main>
+    <div class="favorites-page">
+      <div class="favorites-header">
+        <h1>Избранное</h1>
+        <p class="favorites-count">{{ total_count }} товар{% if total_count != 1 %}ов{% endif %}</p>
+      </div>
+
+      {% if favorite_products %}
+        <div class="favorites-grid">
+          {% for product in favorite_products %}
+          <div class="favorite-card">
+            <a href="{% url 'product_detail' product.id %}" style="display: block; text-decoration: none;">
+              {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+              {% else %}
+                <img src="{% static 'store/Traveler Jacket Blue Academy - 1.jpg' %}" alt="{{ product.name }}">
+              {% endif %}
+            </a>
+            <div class="favorite-card-info">
+              <div class="favorite-card-title">
+                <h3><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+                <div class="favorite-card-price">{{ product.price }} ₸</div>
+                <div class="favorite-actions">
+                  <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="margin-right: 5px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                    В корзину
+                  </a>
+                  <form method="POST" action="{% url 'remove_from_favorites' product.id %}" style="flex-shrink: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="remove-btn" title="Удалить из избранного">×</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="favorites-empty">
+          <h2>Избранное пусто</h2>
+          <p>Пока вы не добавили ни один товар в избранное</p>
+          <a href="{% url 'catalog' %}" class="continue-shopping">Продолжить покупки</a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  {% include 'store/footer.html' %}
+
+  <script src="{% static 'store/script.js' %}"></script>
+</body>
+</html>

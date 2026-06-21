@@ -1,0 +1,25 @@
+<section data-block-id="{{ block.id }}" {% if request.GET.preview and not block.is_active %}style="opacity: 0.4; outline: 2px dashed red;"{% endif %} class="products-section">
+  <div class="products-header">
+    {% if block.title %}<h2>{{ block.title }}</h2>{% endif %}
+    {% if block.button_link %}<a href="{{ block.button_link }}">{{ block.button_text }}</a>{% endif %}
+  </div>
+  <div class="products-grid">
+    {% for item in block.items.all %}
+    <div class="product-card" style="border: none;">
+      <div class="image-wrapper">
+        <a href="{{ item.link }}" style="display: block; width: 100%; height: 100%;">
+          {% if item.image %}
+          <img src="{{ item.image.url }}" alt="{{ item.title }}" class="product-image active" style="object-fit: cover;">
+          {% endif %}
+        </a>
+      </div>
+      <div class="product-info" style="padding: 15px 0;">
+        <div class="product-details">
+          <h3><a href="{{ item.link }}" style="text-decoration:none; color:inherit;">{{ item.title }}</a></h3>
+          {% if item.subtitle %}<span class="price" style="font-weight: 400; color: #666; font-size: 13px; margin-top: 5px; display: block;">{{ item.subtitle }}</span>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>

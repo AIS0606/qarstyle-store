@@ -1,0 +1,191 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="m-0 text-dark">Обзор</h1>
+            <p class="text-muted">Добро пожаловать в панель управления QarStyle</p>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="dashboard-grid">
+        <div class="info-box">
+            <span class="info-box-icon bg-black text-white"><i class="fas fa-money-bill-wave"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Общая выручка</span>
+                <span class="info-box-number">{{ admin_stats.total_revenue|floatformat:0 }} ₸</span>
+            </div>
+        </div>
+        <div class="info-box">
+            <span class="info-box-icon bg-black text-white"><i class="fas fa-shopping-bag"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Заказы</span>
+                <span class="info-box-number">{{ admin_stats.total_orders }}</span>
+            </div>
+        </div>
+        <div class="info-box">
+            <span class="info-box-icon bg-black text-white"><i class="fas fa-users"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Клиенты</span>
+                <span class="info-box-number">{{ admin_stats.total_clients }}</span>
+            </div>
+        </div>
+        <div class="info-box">
+            <span class="info-box-icon bg-black text-white"><i class="fas fa-box"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Товары</span>
+                <span class="info-box-number">{{ admin_stats.total_products }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Revenue Chart -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Выручка</h3>
+                    <div class="card-tools">
+                        <span class="badge badge-info">Последние 6 месяцев</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Share -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">По категориям</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="categoriesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Orders -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header border-transparent">
+                    <h3 class="card-title">Последние заказы</h3>
+                    <div class="card-tools">
+                        <a href="/admin/store/order/" class="btn btn-sm btn-dark">Все заказы</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table m-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Клиент</th>
+                                    <th>Статус</th>
+                                    <th>Сумма</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in latest_orders_list %}
+                                <tr>
+                                    <td><a href="/admin/store/order/{{ order.id }}/change/">#{{ order.id }}</a></td>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if order.status == 'completed' %}badge-success
+                                            {% elif order.status == 'new' %}badge-info
+                                            {% elif order.status == 'cancelled' %}badge-danger
+                                            {% else %}badge-warning{% endif %}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ order.total_price }} ₸</td>
+                                    <td>{{ order.created_at|date:"d M Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">Заказов пока нет</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Revenue Chart
+    const revCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueData = {
+        labels: [{% for item in revenue_chart_data %}'{{ item.month }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Выручка (₸)',
+            data: [{% for item in revenue_chart_data %}{{ item.revenue }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            borderColor: '#000000',
+            backgroundColor: 'rgba(0, 0, 0, 0.05)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4
+        }]
+    };
+    new Chart(revCtx, {
+        type: 'line',
+        data: revenueData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { display: false } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Categories Chart
+    const catCtx = document.getElementById('categoriesChart').getContext('2d');
+    const catData = {
+        labels: [{% for cat in categories_share_data %}'{{ cat.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for cat in categories_share_data %}{{ cat.product_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: ['#000000', '#333333', '#666666', '#999999', '#cccccc'],
+            borderWidth: 0
+        }]
+    };
+    new Chart(catCtx, {
+        type: 'doughnut',
+        data: catData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+            },
+            cutout: '70%'
+        }
+    });
+</script>
+
+<style>
+    /* Hide default Jazzmin content if needed */
+    .content-header { display: none !important; }
+</style>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата Kaspi QR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .kaspi-header {
+      margin-top: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .qr-icon {
+      color: #f14635;
+      display: flex;
+      align-items: center;
+    }
+    
+    .kaspi-text {
+      color: #000;
+    }
+
+    .instruction {
+      margin-top: 15px;
+      font-size: 15px;
+      color: #555;
+    }
+
+    .amount {
+      margin-top: 15px;
+      font-size: 38px;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: -1px;
+    }
+
+    .qr-container {
+      margin-top: 30px;
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .qr-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    .qr-center-logo {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      background: #fff;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 4px #fff;
+    }
+
+    .qr-center-logo div {
+      background: #f14635;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Simple stickman family icon for the center */
+    .qr-center-logo svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .payment-methods-title {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .gold-icon {
+      margin-top: 15px;
+      width: 44px;
+      height: 44px;
+      background: #d4af37; /* gold */
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .gold-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .demo-action {
+      margin-top: auto;
+      margin-bottom: 40px;
+      padding: 20px;
+      border-top: 1px solid #eee;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .btn-pay {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 16px 30px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    
+    .btn-pay:hover {
+      background: #222;
+    }
+
+    .order-items {
+      margin-top: 24px;
+      width: 100%;
+      max-width: 320px;
+      background: #f8f8f8;
+      border: 1px solid #eee;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+    }
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .order-item:last-child {
+      margin-bottom: 0;
+    }
+    .item-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #eee;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .item-details {
+      flex: 1;
+      min-width: 0;
+    }
+    .item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-meta {
+      font-size: 12px;
+      color: #777;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="kaspi-header">
+    <div class="qr-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+    </div>
+    <div class="kaspi-text">Kaspi QR</div>
+  </div>
+
+  <div class="instruction">Сканируйте и платите</div>
+  
+  <div class="amount">{{ order.total_price|floatformat:"0" }} ₸</div>
+
+  <div class="order-items">
+    {% for item in order.items.all %}
+    <div class="order-item">
+      {% if item.product.image %}
+      <img src="{{ item.product.image.url }}" class="item-img" alt="{{ item.product.name }}">
+      {% else %}
+      <div class="item-img"></div>
+      {% endif %}
+      <div class="item-details">
+        <div class="item-name">{{ item.product.name }}</div>
+        <div class="item-meta">{{ item.quantity }} шт. × {{ item.price|floatformat:"0" }} ₸</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="qr-container">
+    <!-- QR Code generated with High error correction (ecc=H) to allow logo in center, and high res 512x512 for crispness -->
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=512x512&ecc=H&data=QarStyleOrder{{ order.id }}" alt="QR Code" class="qr-image">
+    <div class="qr-center-logo">
+      <div>
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="7" r="3" />
+          <path d="M7 21L12 14L17 21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M7 11H17" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="payment-methods-title">Способы оплаты</div>
+  
+  <div class="gold-icon">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3" />
+      <path d="M5 21v-2a4 4 0 014-4h6a4 4 0 014 4v2" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="demo-action">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn-pay">Оплатить (Для диплома)</button>
+    </form>
+  </div>
+
+  <script src="{% static 'store/script.js' %}"></script>
+</body>
+</html>

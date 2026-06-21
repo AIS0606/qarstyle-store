@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="100%" height="100%" style="background-color: #2b2b2b; font-family: monospace;">
+  
+  <!-- Outer Border -->
+  <rect x="0" y="0" width="1000" height="650" fill="none" stroke="#1e1e1e" stroke-width="4"/>
+
+  <!-- Title -->
+  <text x="500" y="30" font-size="20" text-anchor="middle" fill="#e8ba36" font-family="Arial, sans-serif" font-weight="bold">Схема базы данных проекта QarStyle (ER-диаграмма)</text>
+
+  <!-- Arrow Definitions -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#606366" />
+    </marker>
+    <!-- M2M Crow's foot approximation (diamond or circle) -->
+    <marker id="circle" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+      <circle cx="5" cy="5" r="4" fill="none" stroke="#606366" stroke-width="1.5" />
+    </marker>
+  </defs>
+
+  <!-- LINES (Relationships) -->
+  <g fill="none" stroke="#606366" stroke-width="1.5" stroke-linejoin="round" marker-start="url(#circle)" marker-end="url(#arrow)">
+    
+    <!-- Product.department_id -> Department.id -->
+    <path d="M 350 245 L 315 245 L 315 95 L 280 95" />
+    
+    <!-- Product.category_id -> Category.id -->
+    <path d="M 465 180 L 465 140" />
+
+    <!-- ProductVariant.product_id -> Product.id -->
+    <path d="M 680 365 L 630 365 L 630 225 L 580 225" />
+
+    <!-- ProductVariant.size_id -> Size.id -->
+    <path d="M 795 300 L 795 240" />
+
+    <!-- ProductVariant.color_id -> Color.id -->
+    <path d="M 910 405 L 950 405 L 950 95 L 910 95" />
+
+    <!-- ProductImage.product_id -> Product.id -->
+    <path d="M 465 470 L 465 415" />
+
+    <!-- ProductImage.color_id -> Color.id -->
+    <path d="M 580 555 L 640 555 L 640 115 L 680 115" />
+
+    <!-- Favorite_products.favorite_id -> Favorite.id -->
+    <path d="M 165 380 L 165 330" />
+
+    <!-- Favorite_products.product_id -> Product.id -->
+    <path d="M 280 465 L 315 465 L 315 225 L 350 225" />
+
+  </g>
+
+  <!-- TABLES -->
+  <g font-size="13">
+    
+    <!-- store_department -->
+    <g transform="translate(50, 50)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_department</text>
+      <rect x="0" y="30" width="230" height="70" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#a9b7c6">   name</text> <text x="220" y="65" fill="#808080" text-anchor="end">varchar</text>
+      <text x="10" y="85" fill="#a9b7c6">   slug</text> <text x="220" y="85" fill="#808080" text-anchor="end">varchar</text>
+    </g>
+
+    <!-- store_category -->
+    <g transform="translate(350, 50)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_category</text>
+      <rect x="0" y="30" width="230" height="70" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#a9b7c6">   name</text> <text x="220" y="65" fill="#808080" text-anchor="end">varchar</text>
+      <text x="10" y="85" fill="#a9b7c6">   slug</text> <text x="220" y="85" fill="#808080" text-anchor="end">varchar</text>
+    </g>
+
+    <!-- store_color -->
+    <g transform="translate(680, 50)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_color</text>
+      <rect x="0" y="30" width="230" height="70" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#a9b7c6">   name</text> <text x="220" y="65" fill="#808080" text-anchor="end">varchar</text>
+      <text x="10" y="85" fill="#a9b7c6">   hex_code</text> <text x="220" y="85" fill="#808080" text-anchor="end">varchar</text>
+    </g>
+
+    <!-- store_size -->
+    <g transform="translate(680, 170)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_size</text>
+      <rect x="0" y="30" width="230" height="50" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#a9b7c6">   name</text> <text x="220" y="65" fill="#808080" text-anchor="end">varchar</text>
+    </g>
+
+    <!-- store_product -->
+    <g transform="translate(350, 180)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_product</text>
+      <rect x="0" y="30" width="230" height="210" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#9876aa">🔗 department_id</text> <text x="220" y="65" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="85" fill="#9876aa">🔗 category_id</text> <text x="220" y="85" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="105" fill="#a9b7c6">   name</text> <text x="220" y="105" fill="#808080" text-anchor="end">varchar</text>
+      <text x="10" y="125" fill="#a9b7c6">   description</text> <text x="220" y="125" fill="#808080" text-anchor="end">text</text>
+      <text x="10" y="145" fill="#a9b7c6">   price</text> <text x="220" y="145" fill="#808080" text-anchor="end">decimal</text>
+      <text x="10" y="165" fill="#a9b7c6">   image</text> <text x="220" y="165" fill="#808080" text-anchor="end">varchar</text>
+      <text x="10" y="185" fill="#a9b7c6">   available</text> <text x="220" y="185" fill="#808080" text-anchor="end">bool</text>
+      <text x="10" y="205" fill="#a9b7c6">   is_sale</text> <text x="220" y="205" fill="#808080" text-anchor="end">bool</text>
+      <text x="10" y="225" fill="#a9b7c6">   is_resale</text> <text x="220" y="225" fill="#808080" text-anchor="end">bool</text>
+    </g>
+
+    <!-- store_favorite -->
+    <g transform="translate(50, 240)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_favorite</text>
+      <rect x="0" y="30" width="230" height="70" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#9876aa">🔗 user_id</text> <text x="220" y="65" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="85" fill="#a9b7c6">   session_id</text> <text x="220" y="85" fill="#808080" text-anchor="end">varchar</text>
+    </g>
+
+    <!-- store_favorite_products (M2M) -->
+    <g transform="translate(50, 380)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_favorite_products</text>
+      <rect x="0" y="30" width="230" height="70" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#9876aa">🔗 favorite_id</text> <text x="220" y="65" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="85" fill="#9876aa">🔗 product_id</text> <text x="220" y="85" fill="#808080" text-anchor="end">int</text>
+    </g>
+
+    <!-- store_productvariant -->
+    <g transform="translate(680, 300)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_productvariant</text>
+      <rect x="0" y="30" width="230" height="110" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#9876aa">🔗 product_id</text> <text x="220" y="65" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="85" fill="#9876aa">🔗 size_id</text> <text x="220" y="85" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="105" fill="#9876aa">🔗 color_id</text> <text x="220" y="105" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="125" fill="#a9b7c6">   stock</text> <text x="220" y="125" fill="#808080" text-anchor="end">int</text>
+    </g>
+
+    <!-- store_productimage -->
+    <g transform="translate(350, 470)">
+      <rect x="0" y="0" width="230" height="30" fill="#4e3b25" stroke="#1e1e1e" />
+      <text x="10" y="20" fill="#e8ba36" font-weight="bold">store_productimage</text>
+      <rect x="0" y="30" width="230" height="90" fill="#313335" stroke="#1e1e1e" />
+      
+      <text x="10" y="45" fill="#cc7832">🔑 id</text> <text x="220" y="45" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="65" fill="#9876aa">🔗 product_id</text> <text x="220" y="65" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="85" fill="#9876aa">🔗 color_id</text> <text x="220" y="85" fill="#808080" text-anchor="end">int</text>
+      <text x="10" y="105" fill="#a9b7c6">   image</text> <text x="220" y="105" fill="#808080" text-anchor="end">varchar</text>
+    </g>
+
+  </g>
+</svg>

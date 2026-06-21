@@ -1,0 +1,5 @@
+<section data-block-id="{{ block.id }}" {% if request.GET.preview and not block.is_active %}style="opacity: 0.4; outline: 2px dashed red;"{% endif %} style="padding: 60px 20px; max-width: 800px; margin: 0 auto; text-align: center;">
+  {% if block.title %}<h2 style="font-size: 24px; margin-bottom: 20px; font-weight: 600;">{{ block.title }}</h2>{% endif %}
+  {% if block.subtitle %}<p style="font-size: 16px; color: #666; line-height: 1.6; white-space: pre-wrap;">{{ block.subtitle }}</p>{% endif %}
+  {% if block.button_link %}<a href="{{ block.button_link }}" class="btn-solid" style="margin-top: 20px; display: inline-block;">{{ block.button_text }}</a>{% endif %}
+</section>

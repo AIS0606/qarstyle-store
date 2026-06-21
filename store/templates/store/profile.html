@@ -1,0 +1,646 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль - QarStyle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'store/styles.css' %}?v=21">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #f7f7f7;
+      margin: 0; padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .profile-wrap {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px 80px;
+    }
+    /* Page Header */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .profile-header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+    .profile-header small {
+      display: block;
+      font-size: 13px;
+      color: #888;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+    .btn-logout {
+      font-size: 13px;
+      color: #888;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+      background: none;
+      border: 1px solid #e5e5e5;
+      border-radius: 999px;
+      padding: 6px 14px;
+      cursor: pointer;
+    }
+    .btn-logout:hover { color: #d9534f; border-color: #f5c6c6; }
+
+    /* Order Card */
+    .order-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.06);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    /* Card Header */
+    .order-card-head {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .order-id {
+      font-size: 15px;
+      font-weight: 600;
+      color: #000;
+    }
+    .order-date {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 2px;
+    }
+    .order-status {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+    .status-new       { background: #fffbe6; color: #b45309; }
+    .status-paid      { background: #ecfdf5; color: #059669; }
+    .status-shipped   { background: #f0f4ff; color: #3b5bdb; }
+    .status-completed { background: #000; color: #fff; }
+    .status-cancelled { background: #fff0f0; color: #dc2626; }
+
+    /* Tracking bar */
+    .tracking-wrap {
+      padding: 22px 24px 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .tracking-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #aaa;
+      margin-bottom: 14px;
+    }
+    .tracking-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #e5e5e5;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      transition: all 0.2s;
+    }
+    .step-dot svg { display: none; }
+    .step.done .step-dot {
+      background: #000;
+      border-color: #000;
+    }
+    .step.done .step-dot svg { display: block; }
+    .step.active .step-dot {
+      background: #000;
+      border-color: #000;
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.12);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    .step.active .step-dot svg { display: block; opacity: 0; }
+    .step.active .step-dot::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(0,0,0,0.12); }
+      50% { box-shadow: 0 0 0 8px rgba(0,0,0,0.06); }
+    }
+    .step-label {
+      font-size: 10px;
+      color: #bbb;
+      margin-top: 7px;
+      text-align: center;
+    }
+    .step.done .step-label, .step.active .step-label { color: #000; }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e5e5;
+      margin-bottom: 20px;
+    }
+    .step-line.done { background: #000; }
+
+    /* Products list */
+    .order-items {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .order-item:last-child { border-bottom: none; }
+    .item-img {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #f2f2f2;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .item-img-placeholder {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: #f2f2f2;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-meta {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 2px;
+    }
+    .item-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Footer row */
+    .order-footer {
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .pay-method {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #888;
+    }
+    .pay-icon {
+      width: 32px;
+      height: 20px;
+      border-radius: 4px;
+      background: #f2f2f2;
+      border: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .order-total {
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+    }
+    .order-total small {
+      font-size: 12px;
+      font-weight: 400;
+      color: #aaa;
+      margin-right: 4px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .empty-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: #f5f5f5;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .empty-state h2 { font-size: 17px; font-weight: 600; margin: 0 0 8px; }
+    .empty-state p { font-size: 14px; color: #888; margin: 0 0 20px; }
+    .btn-catalog {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Tabs */
+    .profile-tabs {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #eee;
+    }
+    .profile-tab {
+      padding: 10px 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #888;
+      cursor: pointer;
+      position: relative;
+    }
+    .profile-tab.active {
+      color: #000;
+    }
+    .profile-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #000;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Body Profile Form */
+    .body-profile-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.06);
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .body-profile-container h2 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    .zara-form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .zara-form-group label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 5px;
+    }
+    .zara-input-group {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #d1d1d1;
+      font-size: 14px;
+      padding: 8px 0;
+      background: transparent;
+      outline: none;
+    }
+    .zara-input-group:focus {
+      border-bottom-color: #000;
+    }
+    .zara-btn {
+      width: 100%;
+      background: #000;
+      color: #fff;
+      padding: 15px;
+      border: none;
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      border-radius: 999px;
+    }
+    .zara-btn:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    БЕСПЛАТНАЯ ДОСТАВКА ПО КАЗАХСТАНУ ОТ 50 000 ₸ - ВОЗВРАТ 30 ДНЕЙ
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="hamburger" id="hamburger">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </div>
+      <a href="{% url 'index' %}" class="logo">
+        <img src="{% static 'store/QS.svg' %}" alt="QarStyle Logo">
+      </a>
+    </div>
+    <nav class="nav-links" id="nav-links">
+      <a href="{% url 'catalog' %}?department=mens">Мужской</a>
+      <a href="{% url 'catalog' %}?department=womens">Женский</a>
+      <a href="{% url 'catalog' %}?department=kids">Детский</a>
+      <a href="{% url 'catalog' %}?department=bags-gear">Сумки и снаряжение</a>
+      <a href="{% url 'catalog' %}?sale=1">Распродажа</a>
+      <a href="{% url 'catalog' %}?resale=1">Перепродажа</a>
+      <a href="{% url 'about' %}">О нас</a>
+    </nav>
+    <div class="header-right">
+      <form class="search-bar" method="GET" action="{% url 'catalog' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Поиск" required>
+        <button type="submit" style="display:none;"></button>
+      </form>
+      <div class="icons">
+        <a href="{% url 'cart' %}" style="text-decoration: none; display: flex; align-items: center; position: relative;">
+          <img src="{% static 'store/image-2_1.svg' %}" alt="Cart" style="cursor: pointer;">
+          {% if cart_count > 0 %}
+          <span class="nav-badge">{{ cart_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'favorites' %}" class="header-fav-btn" aria-label="Избранное" style="text-decoration: none; display: flex; align-items: center; color: #000; position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          {% if favorites_count > 0 %}
+          <span class="nav-badge">{{ favorites_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'profile' %}" style="text-decoration: none; display: flex; align-items: center; margin-left: 10px;">
+          <img src="{% static 'store/free-icon-user-5617164.svg' %}" alt="User" style="cursor: pointer; width: 24px; height: 24px;">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-wrap">
+    <!-- Page Header -->
+    <div class="profile-header">
+      <div>
+        <h1>Мои заказы</h1>
+        <small>{{ request.user.first_name|default:request.user.username }} · {{ request.user.email }}</small>
+      </div>
+      <a href="{% url 'logout' %}" class="btn-logout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Выйти
+      </a>
+    </div>
+
+    <div class="profile-tabs">
+      <div class="profile-tab active" onclick="switchTab('orders')">Мои заказы</div>
+      <div class="profile-tab" onclick="switchTab('body')">Мои параметры тела</div>
+    </div>
+
+    <div id="tab-orders" class="tab-content active">
+      {% if orders %}
+        {% for order in orders %}
+        <div class="order-card">
+          <!-- Card Header -->
+          <div class="order-card-head">
+            <div>
+              <div class="order-id">Заказ #QS-{{ order.id }}</div>
+              <div class="order-date">{{ order.created_at|date:"d E Y, H:i" }}</div>
+            </div>
+            <span class="order-status 
+              {% if order.status == 'new' %}status-new
+              {% elif order.status == 'paid' %}status-paid
+              {% elif order.status == 'shipped' %}status-shipped
+              {% elif order.status == 'completed' %}status-completed
+              {% elif order.status == 'cancelled' %}status-cancelled
+              {% endif %}">
+              {{ order.get_status_display }}
+            </span>
+          </div>
+
+          <!-- Tracking Steps -->
+          {% if order.status != 'cancelled' %}
+          <div class="tracking-wrap">
+            <div class="tracking-label">Отслеживание</div>
+            <div class="tracking-steps">
+              <div class="step done">
+                <div class="step-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg></div>
+                <span class="step-label">Оформлен</span>
+              </div>
+              <div class="step-line {% if order.status == 'paid' or order.status == 'shipped' or order.status == 'completed' %}done{% endif %}"></div>
+              <div class="step {% if order.status == 'paid' %}active{% elif order.status == 'shipped' or order.status == 'completed' %}done{% endif %}">
+                <div class="step-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg></div>
+                <span class="step-label">Оплачен</span>
+              </div>
+              <div class="step-line {% if order.status == 'shipped' or order.status == 'completed' %}done{% endif %}"></div>
+              <div class="step {% if order.status == 'shipped' %}active{% elif order.status == 'completed' %}done{% endif %}">
+                <div class="step-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg></div>
+                <span class="step-label">В пути</span>
+              </div>
+              <div class="step-line {% if order.status == 'completed' %}done{% endif %}"></div>
+              <div class="step {% if order.status == 'completed' %}done{% endif %}">
+                <div class="step-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg></div>
+                <span class="step-label">Доставлен</span>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Product Items -->
+          <div class="order-items">
+            {% for item in order.items.all %}
+            <div class="order-item">
+              {% if item.product.image %}
+              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-img" />
+              {% else %}
+              <div class="item-img-placeholder">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>
+                </svg>
+              </div>
+              {% endif %}
+              <div class="item-info">
+                <div class="item-name">{{ item.product.name }}</div>
+                <div class="item-meta">
+                  {{ item.product.category.name }} · {{ item.quantity }} шт.<br>
+                  <span style="font-size: 11px;">Цвет: {{ item.color_name|default:"Оригинал" }}, Размер: {{ item.size_name|default:"Не указан" }}</span>
+                </div>
+              </div>
+              <div class="item-price">{{ item.price|floatformat:"0" }} ₸</div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Footer: payment + total -->
+          <div class="order-footer">
+            <div class="pay-method">
+              <div class="pay-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
+              <span>
+                  {{ order.get_payment_method_display }}<br>
+                  <small style="color:#888;">Адрес: {{ order.city }}, {{ order.address }}</small>
+              </span>
+            </div>
+            <div class="order-actions" style="display: flex; align-items: center; gap: 15px;">
+              {% if order.status == 'new' %}
+              <form action="{% url 'cancel_order' order.id %}" method="post" style="margin: 0;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Вы уверены, что хотите отменить этот заказ?');" style="font-size: 12px; padding: 5px 10px; border-radius: 999px; background: none; border: 1px solid #dc2626; color: #dc2626; cursor: pointer;">Отменить заказ</button>
+              </form>
+              {% endif %}
+              <div class="order-total" style="text-align: right;">
+                  <small>Итого:</small>{{ order.total_price|floatformat:"0" }} ₸
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+          </div>
+          <h2>У вас пока нет заказов</h2>
+          <p>Начните покупки прямо сейчас</p>
+          <a href="{% url 'catalog' %}" class="btn-catalog">Перейти в каталог</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Body Profile Tab Content -->
+    <div id="tab-body" class="tab-content">
+      <div class="body-profile-container">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5"><path d="M20.38 3.46L16 2a8.96 8.96 0 0 1-3.99 0L8 2 3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+        <h2>Заполните параметры тела</h2>
+        <p style="font-size: 13px; color: #888; margin-bottom: 30px;">Это поможет нам рекомендовать вам подходящий размер товаров.</p>
+        
+        {% if messages %}
+        <div style="margin-bottom: 20px;">
+            {% for message in messages %}
+            <div style="color: #059669; font-size: 13px; background: #ecfdf5; padding: 10px; border-radius: 8px;">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'profile' %}">
+          {% csrf_token %}
+          <div class="zara-form-group">
+            <label>Пол</label>
+            {{ body_form.gender }}
+          </div>
+          <div style="display: flex; gap: 20px;">
+            <div class="zara-form-group" style="flex:1;">
+              <label>Рост (см)</label>
+              {{ body_form.height }}
+            </div>
+            <div class="zara-form-group" style="flex:1;">
+              <label>Вес (кг)</label>
+              {{ body_form.weight }}
+            </div>
+          </div>
+          <div style="display: flex; gap: 20px;">
+            <div class="zara-form-group" style="flex:1;">
+              <label>Обхват груди (см)</label>
+              {{ body_form.chest }}
+            </div>
+            <div class="zara-form-group" style="flex:1;">
+              <label>Обхват талии (см)</label>
+              {{ body_form.waist }}
+            </div>
+            <div class="zara-form-group" style="flex:1;">
+              <label>Обхват бедер (см)</label>
+              {{ body_form.hips }}
+            </div>
+          </div>
+          <button type="submit" name="save_body_profile" class="zara-btn" style="margin-top: 10px;">Сохранить параметры</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  {% include 'store/footer.html' %}
+
+  <script src="{% static 'store/script.js' %}"></script>
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      if (tabId === 'orders') {
+        document.querySelectorAll('.profile-tab')[0].classList.add('active');
+        document.getElementById('tab-orders').classList.add('active');
+      } else {
+        document.querySelectorAll('.profile-tab')[1].classList.add('active');
+        document.getElementById('tab-body').classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

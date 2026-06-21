@@ -1,0 +1,170 @@
+{% extends "admin/admin_base_custom.html" %}
+
+{% block title %}Блоки главной страницы | QarStyle Admin{% endblock %}
+{% block page_title %}Блоки главной страницы{% endblock %}
+{% block page_subtitle %}Управление конструктором главной страницы{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen bg-[#f8f8f8]">
+  <main class="flex-1 space-y-5">
+    
+    {% if messages %}
+    {% for message in messages %}
+    <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-3 rounded-xl text-sm mb-4">
+      <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 shrink-0"></i>{{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Top Controls -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <h2 class="text-black font-medium">Конструктор блоков ({{ blocks.count }})</h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'custom_admin_block_add' %}" class="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-black/80 transition-colors">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          Добавить блок
+        </a>
+      </div>
+    </div>
+
+    <!-- Blocks List -->
+    <div class="bg-white rounded-2xl border border-black/5 overflow-hidden">
+      <div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-black/5 bg-black/[0.02]">
+        <div class="col-span-1"></div>
+        <div class="col-span-4 text-xs font-medium text-black/40 uppercase tracking-wider">Заголовок / Подзаголовок</div>
+        <div class="col-span-3 text-xs font-medium text-black/40 uppercase tracking-wider">Тип блока</div>
+        <div class="col-span-2 text-xs font-medium text-black/40 uppercase tracking-wider text-center">Статус</div>
+        <div class="col-span-2 text-xs font-medium text-black/40 uppercase tracking-wider text-right">Действия</div>
+      </div>
+      
+      <div id="sortable-blocks" class="divide-y divide-black/5">
+        {% for block in blocks %}
+        <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-white hover:bg-black/[0.01] transition-colors sortable-item" data-id="{{ block.id }}">
+          
+          <div class="col-span-1 flex items-center text-black/20 hover:text-black cursor-grab active:cursor-grabbing handle">
+            <i data-lucide="grip-vertical" class="w-5 h-5"></i>
+          </div>
+
+          <div class="col-span-4">
+            <div class="flex items-center gap-3">
+              {% if block.image_main %}
+                <img src="{{ block.image_main.url }}" class="w-10 h-10 rounded-lg object-cover border border-black/10 shrink-0">
+              {% else %}
+                <div class="w-10 h-10 rounded-lg bg-black/5 border border-black/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="layout-template" class="w-4 h-4 text-black/40"></i>
+                </div>
+              {% endif %}
+              <div>
+                <div class="text-sm font-medium text-black line-clamp-1">{{ block.title|default:"Без заголовка" }}</div>
+                {% if block.subtitle %}
+                <div class="text-xs text-black/50 line-clamp-1 mt-0.5">{{ block.subtitle }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-span-3">
+            <div class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-black/5 text-black/70">
+              {{ block.get_type_display }}
+            </div>
+          </div>
+
+          <div class="col-span-2 flex justify-center">
+            {% if block.is_active %}
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+              Активен
+            </div>
+            {% else %}
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
+              Скрыт
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="col-span-2 flex items-center justify-end gap-2">
+            <a href="{% url 'custom_admin_block_edit' block.id %}" class="w-8 h-8 rounded-lg flex items-center justify-center text-black/40 hover:text-black hover:bg-black/5 transition-colors" title="Редактировать">
+              <i data-lucide="pencil" class="w-4 h-4"></i>
+            </a>
+            <button onclick="deleteBlock({{ block.id }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Удалить">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+        </div>
+        {% empty %}
+        <div class="px-6 py-12 text-center">
+          <div class="w-16 h-16 bg-black/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="layout-template" class="w-8 h-8 text-black/20"></i>
+          </div>
+          <h3 class="text-black font-medium mb-1">Нет блоков</h3>
+          <p class="text-sm text-black/50 mb-4">Вы еще не добавили ни одного блока на главную страницу.</p>
+          <a href="{% url 'custom_admin_block_add' %}" class="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-black/80 transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Создать первый блок
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- SortableJS for drag-and-drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const el = document.getElementById('sortable-blocks');
+    if (el) {
+      new Sortable(el, {
+        handle: '.handle',
+        animation: 150,
+        ghostClass: 'bg-black/5',
+        onEnd: function () {
+          const items = el.querySelectorAll('.sortable-item');
+          const order = Array.from(items).map(item => item.dataset.id);
+          
+          fetch("{% url 'admin_blocks_reorder' %}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ order: order })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if(data.status !== 'ok') {
+              console.error('Ошибка сохранения порядка');
+            }
+          });
+        }
+      });
+    }
+  });
+
+  function deleteBlock(id) {
+    if(confirm('Вы уверены, что хотите удалить этот блок?')) {
+      window.location.href = `/admin/store/block/${id}/delete/`;
+    }
+  }
+</script>
+{% endblock %}

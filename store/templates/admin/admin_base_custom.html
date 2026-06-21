@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}QarStyle Admin{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        background: '#f8f8f8',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    {% block extrahead %}{% endblock %}
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#f8f8f8] text-[#111111] min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-screen w-[240px] bg-black flex flex-col z-50">
+        <!-- Logo -->
+        <div class="flex items-center justify-between px-6 py-6 border-b border-white/10">
+            <div class="flex items-center gap-2">
+                <svg width="36" height="20" viewBox="0 0 51.23 29.5612" fill="none">
+                    <path d="M35.8,0C30.1,0,25.6,4.2,25.6,9.6c0,3.3,1.7,6.2,4.3,8L25.6,22l-4.2-4.4c2.6-1.8,4.3-4.7,4.3-8 C25.7,4.2,21.2,0,15.5,0C9.8,0,5.3,4.2,5.3,9.6c0,5.4,4.5,9.6,10.2,9.6c1.7,0,3.3-0.4,4.7-1.1l5.4,5.7v5.7h2.9v-5.7l5.4-5.7 c1.4,0.7,3,1.1,4.7,1.1c5.7,0,10.2-4.2,10.2-9.6C46,4.2,41.5,0,35.8,0z M15.5,16.5c-4,0-7.2-3.1-7.2-6.9s3.2-6.9,7.2-6.9 s7.2,3.1,7.2,6.9S19.5,16.5,15.5,16.5z M35.8,16.5c-4,0-7.2-3.1-7.2-6.9s3.2-6.9,7.2-6.9s7.2,3.1,7.2,6.9S39.8,16.5,35.8,16.5z" fill="white"/>
+                </svg>
+                <span class="text-white text-xs tracking-[0.2em] uppercase font-light">Admin</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 py-6 space-y-0.5 overflow-y-auto">
+            <a href="/admin/overview/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/overview/' in request.path or request.path == '/admin/' %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0 {% if '/admin/overview/' in request.path or request.path == '/admin/' %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Обзор</span>
+                {% if '/admin/overview/' in request.path or request.path == '/admin/' %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/store/order/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/store/order/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="shopping-bag" class="w-4 h-4 shrink-0 {% if '/admin/store/order/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Заказы</span>
+                {% if '/admin/store/order/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/store/product/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/store/product/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="package" class="w-4 h-4 shrink-0 {% if '/admin/store/product/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Товары</span>
+                {% if '/admin/store/product/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/store/category/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/store/category/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="tag" class="w-4 h-4 shrink-0 {% if '/admin/store/category/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Категории</span>
+                {% if '/admin/store/category/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/store/block/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/store/block/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="layout-template" class="w-4 h-4 shrink-0 {% if '/admin/store/block/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Блоки главной</span>
+                {% if '/admin/store/block/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/auth/user/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/auth/user/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="users" class="w-4 h-4 shrink-0 {% if '/admin/auth/user/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Клиенты</span>
+                {% if '/admin/auth/user/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/analytics/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/analytics/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 shrink-0 {% if '/admin/analytics/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Аналитика</span>
+                {% if '/admin/analytics/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/marketing/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/marketing/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="megaphone" class="w-4 h-4 shrink-0 {% if '/admin/marketing/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Маркетинг</span>
+                {% if '/admin/marketing/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+            <a href="/admin/settings/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group {% if '/admin/settings/' in request.path %}bg-white text-black{% else %}text-white/60 hover:text-white hover:bg-white/10{% endif %}">
+                <i data-lucide="settings" class="w-4 h-4 shrink-0 {% if '/admin/settings/' in request.path %}text-black{% else %}text-white/60 group-hover:text-white{% endif %}"></i>
+                <span class="text-sm">Настройки</span>
+                {% if '/admin/settings/' in request.path %}
+                <i data-lucide="chevron-right" class="w-3 h-3 ml-auto text-black/40"></i>
+                {% endif %}
+            </a>
+        </nav>
+
+        <!-- Footer -->
+        <div class="px-3 py-4 border-t border-white/10">
+            <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <span class="text-white text-xs">АД</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-white text-sm truncate">Администратор</p>
+                    <p class="text-white/40 text-xs truncate">admin@qarstyle.kz</p>
+                </div>
+                <a href="/admin/logout/" class="text-white/40 hover:text-white transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-[240px] flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-black/10 flex items-center justify-between px-8 sticky top-0 z-40">
+            <div>
+                <h1 class="text-black font-semibold text-lg">{% block page_title %}Обзор{% endblock %}</h1>
+                <p class="text-xs text-black/40 mt-0.5">{% block page_subtitle %}Добро пожаловать в панель управления QarStyle{% endblock %}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Search -->
+                <div class="flex items-center gap-2 bg-black/5 rounded-full px-4 py-2 w-56">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-black/40"></i>
+                    <input type="text" placeholder="Поиск..." class="bg-transparent text-sm text-black placeholder:text-black/40 outline-none w-full">
+                </div>
+
+                <!-- Notifications -->
+                <button class="relative w-9 h-9 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors">
+                    <i data-lucide="bell" class="w-4 h-4 text-black/60"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-black rounded-full"></span>
+                </button>
+
+                <!-- Date -->
+                <div class="text-xs text-black/40 pl-2 border-l border-black/10 flex items-center h-5 ml-2">
+                    {% now "d E Y г." %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="flex-1 p-8">
+            <div class="max-w-[1200px] mx-auto w-full">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </main>
+
+    {% block extrajs %}{% endblock %}
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

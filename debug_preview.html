@@ -1,0 +1,1045 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QarStyle | Официальный сайт</title>
+  
+  <!-- Google Fonts: Inter as a replacement for Helvetica/San Francisco -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/static/store/styles.css?v=26">
+  
+  
+  <style>
+    /* Стили-заглушки для визуального конструктора (показываются только админам) */
+    [data-block-id] {
+      min-height: 100px;
+    }
+    /* Пустой Hero баннер */
+    .hero:not([style*="background-image"]) {
+      background-color: #e5e7eb;
+      color: #000 !important;
+    }
+    .hero:not([style*="background-image"]) h1, 
+    .hero:not([style*="background-image"]) h4 {
+      color: #000 !important;
+    }
+    /* Пустые половинки сплит баннера */
+    .banner-half:not([style*="background-image"]) {
+      background-color: #e5e7eb;
+      min-height: 300px;
+      color: #000 !important;
+    }
+    .banner-half:not([style*="background-image"]) h2 {
+      color: #000 !important;
+    }
+    /* Пустая сетка карточек */
+    .products-grid:empty {
+      min-height: 200px;
+      background-color: #f3f4f6;
+      border: 2px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .products-grid:empty::before {
+      content: "Нет карточек. Нажмите на блок и добавьте их в правой панели.";
+      color: #9ca3af;
+      font-size: 14px;
+    }
+  </style>
+  
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    БЕСПЛАТНАЯ ДОСТАВКА ПО КАЗАХСТАНУ ОТ 50 000 ₸ - ВОЗВРАТ 30 ДНЕЙ
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="hamburger" id="hamburger">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </div>
+      <a href="/" class="logo">
+        <img src="/static/store/QS.svg" alt="QarStyle Logo">
+      </a>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="/catalog/?department=mens">Мужской</a>
+      <a href="/catalog/?department=womens">Женский</a>
+      <a href="/catalog/?department=kids">Детский</a>
+      <a href="/catalog/?department=bags-gear">Сумки и снаряжение</a>
+      <a href="/catalog/?sale=1">Распродажа</a>
+      <a href="/catalog/?resale=1">Перепродажа</a>
+      <a href="/about/">О нас</a>
+    </nav>
+
+    <div class="header-right">
+      <form class="search-bar" method="GET" action="/catalog/">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Поиск" required>
+        <button type="submit" style="display:none;"></button>
+      </form>
+      <div class="icons">
+        <a href="/cart/" style="text-decoration: none; display: flex; align-items: center; position: relative;">
+          <img src="/static/store/image-2_1.svg" alt="Cart" style="cursor: pointer;">
+          
+        </a>
+        <a href="/favorites/" class="header-fav-btn" aria-label="Избранное" style="text-decoration: none; display: flex; align-items: center; color: #000; position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          
+        </a>
+        <a href="/profile/" style="text-decoration: none; display: flex; align-items: center; margin-left: 10px;">
+          <img src="/static/store/free-icon-user-5617164.svg" alt="User" style="cursor: pointer; width: 24px; height: 24px;">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <section data-block-id="1"  class="hero" >
+  <div class="hero-content">
+    <h4>Коллекция QarStyle</h4>
+    <h1>Желаю вам пышного* лета!</h1>
+    <div class="hero-links">
+      <a href="/catalog/?department=mens">МАГАЗИН ДЛЯ МУЖЧИН</a>
+      <a href="/catalog/?department=womens">МАГАЗИН ЖЕНСКОЙ ОДЕЖДЫ</a>
+    </div>
+  </div>
+</section>
+
+    
+      <section data-block-id="2"  class="category-pills">
+  
+    <a href="/catalog/?department=mens" class="pill">Новинка для мужчин</a>
+  
+    <a href="/catalog/?department=womens" class="pill">Новинка для женщин</a>
+  
+    <a href="/catalog/?department=kids" class="pill">Новое для детей</a>
+  
+</section>
+
+    
+      <section data-block-id="3"  class="split-banners">
+  <div class="banner-half left" >
+    <h2>Верхняя одежда для него</h2>
+    <a href="/catalog/?department=mens">МАГАЗИН ДЛЯ МУЖЧИН</a>
+  </div>
+  <div class="banner-half right" >
+    <h2>Верхняя одежда для нее</h2>
+    <a href="/catalog/?department=womens">МАГАЗИН ЖЕНСКОЙ ОДЕЖДЫ</a>
+  </div>
+</section>
+
+    
+      <section data-block-id="4"  class="promo-banner" >
+  <h2>Открыто для всех.</h2>
+  <p>Представляем коллекцию Circular Collection — полный набор снаряжения для активного отдыха, созданный из переработанных материалов, который прослужит долго и подойдет человеку для любого приключения.</p>
+  <a href="/catalog/" class="btn-solid">Купить коллекцию</a>
+</section>
+
+    
+      
+<section data-block-id="5"  class="products-section">
+  <div class="products-header">
+    <h2>ДЕМИСЕЗОННЫЕ КУРТКИ</h2>
+    <a href="/catalog/">В каталог →</a>
+  </div>
+  <div class="products-grid">
+    
+    <div class="product-card">
+      <div class="image-wrapper">
+        <a href="/product/1/" style="display: block; width: 100%; height: 100%;">
+          <div class="card-slider-container" style="position:relative; width:100%; height:100%;">
+            
+            
+            
+              <img src="/static/store/Traveler%20Jacket%20Blue%20Academy%20-%201.jpg" data-color-id="original" alt="Rainforest Summer Jacket" class="product-image active">
+            
+          </div>
+        </a>
+        
+        <button class="card-arrow prev-arrow" onclick="event.stopPropagation(); event.preventDefault(); prevCardImage(this)" aria-label="Предыдущее фото">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="card-arrow next-arrow" onclick="event.stopPropagation(); event.preventDefault(); nextCardImage(this)" aria-label="Следующее фото">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <form method="POST" action="/add-to-favorites/1/" class="favorite-icon" style="margin:0;" onsubmit="event.stopPropagation();">
+          <input type="hidden" name="csrfmiddlewaretoken" value="3youfTyC4f3mNsx4xohqMYE1dBdVusuHp0qyMuk97TaGT1u8nXszOtyRMf53J6IE">
+          <button type="submit" style="border:none; background:none; padding:0; width:24px; height:24px; cursor:pointer; color:#000; display:flex; align-items:center; justify-content:center;" aria-label="Добавить в избранное">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          </button>
+        </form>
+        <div class="hover-overlay">
+          <div class="color-swatches">
+            
+              <div class="swatch active" 
+                   style="background: #1a1a1a;"
+                   onclick="event.stopPropagation(); changeCardImage(this, 'original')"
+                   title="Оригинал"></div>
+            
+              <div class="swatch" 
+                   style="background: #1A3A6E;"
+                   onclick="event.stopPropagation(); changeCardImage(this, '1')"
+                   title="Blue"></div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-details">
+          <h3><a href="/product/1/" style="text-decoration:none; color:inherit;">Rainforest Summer Jacket</a></h3>
+          <span class="price">101000 ₸</span>
+        </div>
+        <form method="POST" action="/add-to-cart/1/" style="margin:0;">
+          <input type="hidden" name="csrfmiddlewaretoken" value="3youfTyC4f3mNsx4xohqMYE1dBdVusuHp0qyMuk97TaGT1u8nXszOtyRMf53J6IE">
+          <button type="submit" class="cart-btn" aria-label="Добавить в корзину">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15h6m-3-3v6" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="product-card">
+      <div class="image-wrapper">
+        <a href="/product/2/" style="display: block; width: 100%; height: 100%;">
+          <div class="card-slider-container" style="position:relative; width:100%; height:100%;">
+            
+              <img src="/media/products/NP0A4FI3941-HERO.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image active">
+            
+            
+              <img src="/media/products/gallery/NP0A4FI3941-ALT1.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3941-ALT2.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3941-ALT3_CAXZohQ.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3941-ALT4_YtPXjgK.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3941-ALT5_1F1p5b0.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3941-ALT6_6Ss7anp.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3941-HERO.webp" data-color-id="original" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-ALT1_Bgy0Rnp.webp" data-color-id="6" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-ALT2_LH5wma8.webp" data-color-id="6" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-ALT3_bfs6RLD.webp" data-color-id="6" alt="Mountain Light Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-HERO_Y5Tic0o.webp" data-color-id="6" alt="Mountain Light Jacket" class="product-image">
+            
+            
+          </div>
+        </a>
+        
+        <button class="card-arrow prev-arrow" onclick="event.stopPropagation(); event.preventDefault(); prevCardImage(this)" aria-label="Предыдущее фото">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="card-arrow next-arrow" onclick="event.stopPropagation(); event.preventDefault(); nextCardImage(this)" aria-label="Следующее фото">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <form method="POST" action="/add-to-favorites/2/" class="favorite-icon" style="margin:0;" onsubmit="event.stopPropagation();">
+          <input type="hidden" name="csrfmiddlewaretoken" value="3youfTyC4f3mNsx4xohqMYE1dBdVusuHp0qyMuk97TaGT1u8nXszOtyRMf53J6IE">
+          <button type="submit" style="border:none; background:none; padding:0; width:24px; height:24px; cursor:pointer; color:#000; display:flex; align-items:center; justify-content:center;" aria-label="Добавить в избранное">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          </button>
+        </form>
+        <div class="hover-overlay">
+          <div class="color-swatches">
+            
+              <div class="swatch active" 
+                   style="background: #1a1a1a;"
+                   onclick="event.stopPropagation(); changeCardImage(this, 'original')"
+                   title="Оригинал"></div>
+            
+              <div class="swatch" 
+                   style="background: #aa7942;"
+                   onclick="event.stopPropagation(); changeCardImage(this, '6')"
+                   title="Коричневый"></div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-details">
+          <h3><a href="/product/2/" style="text-decoration:none; color:inherit;">Mountain Light Jacket</a></h3>
+          <span class="price">149000 ₸</span>
+        </div>
+        <form method="POST" action="/add-to-cart/2/" style="margin:0;">
+          <input type="hidden" name="csrfmiddlewaretoken" value="3youfTyC4f3mNsx4xohqMYE1dBdVusuHp0qyMuk97TaGT1u8nXszOtyRMf53J6IE">
+          <button type="submit" class="cart-btn" aria-label="Добавить в корзину">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15h6m-3-3v6" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="product-card">
+      <div class="image-wrapper">
+        <a href="/product/3/" style="display: block; width: 100%; height: 100%;">
+          <div class="card-slider-container" style="position:relative; width:100%; height:100%;">
+            
+              <img src="/media/products/NP0A4FI3G3A-HERO.webp" data-color-id="6" alt="Skidoo Open Jacket" class="product-image active">
+            
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-ALT1_In3NYHD.webp" data-color-id="6" alt="Skidoo Open Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-ALT2_7ZM0PGE.webp" data-color-id="6" alt="Skidoo Open Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-ALT3_TsqGpyD.webp" data-color-id="6" alt="Skidoo Open Jacket" class="product-image">
+            
+              <img src="/media/products/gallery/NP0A4FI3G3A-HERO_IaAKqZ4.webp" data-color-id="6" alt="Skidoo Open Jacket" class="product-image">
+            
+            
+          </div>
+        </a>
+        
+        <button class="card-arrow prev-arrow" onclick="event.stopPropagation(); event.preventDefault(); prevCardImage(this)" aria-label="Предыдущее фото">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="card-arrow next-arrow" onclick="event.stopPropagation(); event.preventDefault(); nextCardImage(this)" aria-label="Следующее фото">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <form method="POST" action="/add-to-favorites/3/" class="favorite-icon" style="margin:0;" onsubmit="event.stopPropagation();">
+          <input type="hidden" name="csrfmiddlewaretoken" value="3youfTyC4f3mNsx4xohqMYE1dBdVusuHp0qyMuk97TaGT1u8nXszOtyRMf53J6IE">
+          <button type="submit" style="border:none; background:none; padding:0; width:24px; height:24px; cursor:pointer; color:#000; display:flex; align-items:center; justify-content:center;" aria-label="Добавить в избранное">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          </button>
+        </form>
+        <div class="hover-overlay">
+          <div class="color-swatches">
+            
+              <div class="swatch active" 
+                   style="background: #aa7942;"
+                   onclick="event.stopPropagation(); changeCardImage(this, '6')"
+                   title="Коричневый"></div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-details">
+          <h3><a href="/product/3/" style="text-decoration:none; color:inherit;">Skidoo Open Jacket</a></h3>
+          <span class="price">135000 ₸</span>
+        </div>
+        <form method="POST" action="/add-to-cart/3/" style="margin:0;">
+          <input type="hidden" name="csrfmiddlewaretoken" value="3youfTyC4f3mNsx4xohqMYE1dBdVusuHp0qyMuk97TaGT1u8nXszOtyRMf53J6IE">
+          <button type="submit" class="cart-btn" aria-label="Добавить в корзину">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15h6m-3-3v6" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+    
+      <section data-block-id="7"  class="hero" >
+  <div class="hero-content">
+    
+    <h1>Новый блок</h1>
+    <div class="hero-links">
+      
+      
+    </div>
+  </div>
+</section>
+
+    
+      <section data-block-id="8"  class="hero" >
+  <div class="hero-content">
+    
+    <h1>Новый блок</h1>
+    <div class="hero-links">
+      
+      
+    </div>
+  </div>
+</section>
+
+    
+      <section data-block-id="9"  class="hero" >
+  <div class="hero-content">
+    
+    <h1>Новый блок</h1>
+    <div class="hero-links">
+      
+      
+    </div>
+  </div>
+</section>
+
+    
+      <section data-block-id="10"  class="hero" >
+  <div class="hero-content">
+    
+    <h1>Новый блок</h1>
+    <div class="hero-links">
+      
+      
+    </div>
+  </div>
+</section>
+
+    
+      <section data-block-id="11"  class="products-section">
+  <div class="products-header">
+    <h2>Новый блок</h2>
+    
+  </div>
+  <div class="products-grid">
+    
+  </div>
+</section>
+
+    
+  </main>
+
+  <!-- Footer -->
+  
+<footer class="footer">
+  <div class="footer-top">
+    <!-- Brand Info -->
+    <div class="footer-brand-col">
+      <a href="/" class="footer-brand-logo">
+        <img src="/static/store/QS.svg" alt="QarStyle Logo" style="filter: invert(1); width: 32px; height: 32px;">
+        <span>QarStyle</span>
+      </a>
+      <p class="footer-brand-text">
+        Премиальный бренд зимней и повседневной одежды в Казахстане. Стиль, комфорт и инновации в каждой детали.
+      </p>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="#" aria-label="Telegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </a>
+        <a href="#" aria-label="TikTok">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Catalog Navigation -->
+    <div class="footer-brand-col">
+      <h4 class="footer-col-title">Каталог</h4>
+      <div class="footer-col-links">
+        <a href="/catalog/?department=mens">Мужская коллекция</a>
+        <a href="/catalog/?department=womens">Женская коллекция</a>
+        <a href="/catalog/?department=kids">Детская коллекция</a>
+        <a href="/catalog/?department=bags-gear">Сумки и снаряжение</a>
+        <a href="/catalog/?sale=1">Распродажа</a>
+        <a href="/catalog/?resale=1">Перепродажа</a>
+      </div>
+    </div>
+
+    <!-- Customer Support -->
+    <div class="footer-brand-col">
+      <h4 class="footer-col-title">Поддержка</h4>
+      <div class="footer-col-links">
+        <a href="/profile/">Статус заказа</a>
+        <a href="/about/">Доставка и оплата</a>
+        <a href="/about/">Условия возврата</a>
+        <a href="/about/">Частые вопросы</a>
+        <a href="/profile/">Личный кабинет</a>
+        <a href="/favorites/">Избранное</a>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="footer-newsletter-col">
+      <h4 class="footer-col-title">Рассылка</h4>
+      <p class="footer-newsletter-text">Подпишитесь на новости QarStyle, чтобы первыми узнавать о новых коллекциях и эксклюзивных предложениях.</p>
+      <form class="footer-newsletter-form" onsubmit="event.preventDefault(); alert('Спасибо за подписку!');">
+        <div class="footer-input-group">
+          <input type="email" placeholder="Ваш Email" class="footer-input" required>
+          <button type="submit" class="footer-submit-btn">ОК</button>
+        </div>
+        <div class="footer-checkbox-group">
+          <input type="checkbox" id="footer-privacy" required>
+          <label for="footer-privacy">Я согласен на обработку персональных данных в соответствии с <a href="#">Политикой конфиденциальности</a>.</label>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-left">
+      <div class="footer-legal-links">
+        <a href="#">Условия продажи</a>
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Использование Cookies</a>
+        <a href="#">Публичная оферта</a>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2026 QarStyle. Все права защищены. Разработано в рамках дипломного проекта.
+      </div>
+    </div>
+    <div class="footer-bottom-right">
+      <div class="footer-payments">
+        <span>Способы оплаты:</span>
+        <div class="footer-payment-icons">
+          <div class="footer-payment-badge">KASPI PAY</div>
+          <div class="footer-payment-badge">VISA</div>
+          <div class="footer-payment-badge">MASTERCARD</div>
+          <div class="footer-payment-badge">CASH</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="/static/store/script.js"></script>
+  <div id="ai-assistant-container">
+    <!-- Floating Action Button -->
+    <button id="ai-assistant-fab" aria-label="Открыть ИИ помощника">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span class="fab-label">AI Помощник</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="ai-assistant-window" class="hidden">
+        <div class="chat-header">
+            <div class="header-icon">
+                <div class="black-square">
+                    <div class="bars"></div>
+                    <div class="bars"></div>
+                </div>
+            </div>
+            <button id="close-chat" aria-label="Закрыть чат">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <div id="chat-messages">
+            <div class="message-wrapper bot">
+                <div class="message-time">Только что</div>
+                <div class="message">
+                    <div class="message-content">
+                        Привет! Я ваш персональный помощник QarStyle. Чем могу помочь сегодня?
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Введите сообщение..." autocomplete="off">
+            <button id="send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --ai-primary: #000000;
+        --ai-bg: #ffffff;
+        --ai-border: #e5e5e5;
+        --ai-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        --ai-text: #1a1a1a;
+        --ai-text-muted: #999999;
+    }
+
+    #ai-assistant-container {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 10000;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* FAB Styles */
+    #ai-assistant-fab {
+        background: var(--ai-primary);
+        color: white;
+        border: none;
+        padding: 14px 24px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: var(--ai-shadow);
+        transition: all 0.3s ease;
+    }
+
+    #ai-assistant-fab:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Chat Window Styles */
+    #ai-assistant-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 380px;
+        height: 600px;
+        background: var(--ai-bg);
+        border: 1px solid var(--ai-border);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--ai-shadow);
+        transition: all 0.3s ease;
+        transform-origin: bottom right;
+        overflow: hidden;
+    }
+
+    #ai-assistant-window.hidden {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+        pointer-events: none;
+    }
+
+    .chat-header {
+        padding: 20px 24px 15px;
+        background: var(--ai-bg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--ai-border);
+    }
+
+    .black-square {
+        width: 36px;
+        height: 36px;
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .black-square .bars {
+        width: 4px;
+        height: 14px;
+        background: white;
+    }
+
+    #close-chat {
+        background: none;
+        border: none;
+        color: var(--ai-primary);
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #close-chat svg {
+        stroke-width: 1.5;
+    }
+
+    /* Messages Area */
+    #chat-messages {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        background: #fff;
+    }
+
+    .message-wrapper {
+        display: flex;
+        flex-direction: column;
+        max-width: 90%;
+    }
+
+    .message-wrapper.bot {
+        align-self: flex-start;
+        align-items: flex-start;
+    }
+
+    .message-wrapper.user {
+        align-self: flex-end;
+        align-items: flex-end;
+    }
+
+    .message-time {
+        font-size: 11px;
+        color: var(--ai-text-muted);
+        margin-bottom: 6px;
+    }
+
+    .message-content {
+        font-size: 15px;
+        line-height: 1.4;
+        color: var(--ai-text);
+    }
+
+    .message-wrapper.user .message-content {
+        text-align: right;
+    }
+
+    .message-wrapper.bot .message-content {
+        text-align: left;
+    }
+
+    /* Product Card inside Chat */
+    .chat-product-card {
+        border: 1px solid var(--ai-border);
+        border-radius: 4px;
+        padding: 12px;
+        margin-top: 12px;
+        display: flex;
+        gap: 16px;
+        background: #fff;
+        width: 280px;
+    }
+
+    .chat-product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        background: #f5f5f5;
+        flex-shrink: 0;
+    }
+
+    .chat-product-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
+    }
+
+    .chat-product-title {
+        font-size: 14px;
+        color: var(--ai-text);
+        margin: 0 0 4px 0;
+        line-height: 1.3;
+    }
+
+    .chat-product-price {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ai-text);
+        margin: 0 0 8px 0;
+    }
+
+    .chat-product-btn {
+        background: var(--ai-primary);
+        color: white;
+        text-decoration: none;
+        font-size: 12px;
+        padding: 6px 0;
+        text-align: center;
+        width: 100%;
+        display: block;
+        transition: background 0.2s;
+    }
+
+    .chat-product-btn:hover {
+        background: #333;
+    }
+
+    /* Input Area */
+    .chat-input-container {
+        padding: 16px 24px;
+        background: white;
+        border-top: 1px solid var(--ai-border);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    #chat-input {
+        flex: 1;
+        border: 1px solid var(--ai-border);
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    #chat-input:focus {
+        border-color: #000;
+    }
+
+    #send-btn {
+        background: var(--ai-primary);
+        color: white;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    #send-btn:hover {
+        background: #333;
+    }
+
+    /* Mobile Adaptivity */
+    @media (max-width: 480px) {
+        #ai-assistant-window {
+            width: calc(100vw - 32px);
+            right: -16px;
+            height: calc(100vh - 100px);
+            bottom: 70px;
+        }
+        #ai-assistant-container {
+            bottom: 16px;
+            right: 16px;
+        }
+        .chat-product-card {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fab = document.getElementById('ai-assistant-fab');
+        const window = document.getElementById('ai-assistant-window');
+        const closeBtn = document.getElementById('close-chat');
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const messagesContainer = document.getElementById('chat-messages');
+
+        // Toggle Chat
+        fab.addEventListener('click', () => {
+            window.classList.toggle('hidden');
+            if (!window.classList.contains('hidden')) {
+                input.focus();
+            }
+        });
+
+        closeBtn.addEventListener('click', () => {
+            window.classList.add('hidden');
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !window.classList.contains('hidden')) {
+                window.classList.add('hidden');
+            }
+        });
+
+        function formatTime() {
+            const now = new Date();
+            return now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+        }
+
+        function addMessage(text, isUser = false, products = []) {
+            const timeStr = formatTime();
+            
+            const wrapperDiv = document.createElement('div');
+            wrapperDiv.className = `message-wrapper ${isUser ? 'user' : 'bot'}`;
+            
+            let html = `
+                <div class="message-time">${isUser ? timeStr : timeStr}</div>
+                <div class="message">
+                    <div class="message-content">${text}</div>
+            `;
+
+            if (products && products.length > 0) {
+                products.forEach(p => {
+                    html += `
+                    <div class="chat-product-card">
+                        <img src="${p.image}" alt="${p.name}" class="chat-product-image">
+                        <div class="chat-product-info">
+                            <div>
+                                <p class="chat-product-title">${p.name}</p>
+                                <p class="chat-product-price">${p.price} ₸</p>
+                            </div>
+                            <a href="/product/${p.id}/" class="chat-product-btn">Перейти</a>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            wrapperDiv.innerHTML = html;
+            
+            messagesContainer.appendChild(wrapperDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function handleSend() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            input.value = '';
+
+            const loadingWrapper = document.createElement('div');
+            loadingWrapper.className = 'message-wrapper bot loading';
+            loadingWrapper.innerHTML = `
+                <div class="message-time">Только что</div>
+                <div class="message"><div class="message-content">...</div></div>
+            `;
+            messagesContainer.appendChild(loadingWrapper);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            fetch('/ai-chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                messagesContainer.removeChild(loadingWrapper);
+                if (data.response) {
+                    addMessage(data.response, false, data.products || []);
+                } else if (data.error) {
+                    addMessage("Ошибка: " + data.error);
+                }
+            })
+            .catch(error => {
+                messagesContainer.removeChild(loadingWrapper);
+                console.error('Error:', error);
+                addMessage("Извините, произошла ошибка соединения.");
+            });
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+    });
+</script>
+
+  <script>
+    function changeCardImage(swatchEl, colorId) {
+      const card = swatchEl.closest('.product-card');
+      if (!card) return;
+      const images = Array.from(card.querySelectorAll('.product-image'));
+      const activeImg = card.querySelector('.product-image.active');
+      const targetImg = images.find(img => img.getAttribute('data-color-id') === String(colorId));
+      
+      if (!targetImg || activeImg === targetImg) return;
+
+      targetImg.style.transition = 'opacity 0.3s ease-in-out';
+      targetImg.style.opacity = '1';
+      targetImg.style.transform = 'translateX(0)';
+      
+      if (activeImg) {
+          activeImg.style.transition = 'opacity 0.3s ease-in-out';
+          activeImg.style.opacity = '0';
+          setTimeout(() => {
+              activeImg.classList.remove('active');
+          }, 300);
+      }
+      targetImg.classList.add('active');
+      
+      const swatches = card.querySelectorAll('.swatch');
+      swatches.forEach(sw => sw.classList.remove('active'));
+      swatchEl.classList.add('active');
+    }
+
+    function animateSlide(btn, wrapper, activeImg, nextImg, direction) {
+      if (wrapper.dataset.isAnimating === 'true') return;
+      wrapper.dataset.isAnimating = 'true';
+
+      btn.style.transition = 'transform 0.15s ease-out';
+      btn.style.transform = 'translateY(-50%) scale(0.85)';
+      setTimeout(() => btn.style.transform = 'translateY(-50%) scale(1)', 150);
+
+      nextImg.style.transition = 'none';
+      nextImg.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+      nextImg.style.opacity = '1';
+      
+      void nextImg.offsetWidth; // Force reflow
+      
+      const transitionStr = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+      nextImg.style.transition = transitionStr;
+      activeImg.style.transition = transitionStr;
+      
+      nextImg.style.transform = 'translateX(0)';
+      activeImg.style.transform = direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
+      nextImg.classList.add('active');
+      
+      setTimeout(() => {
+        activeImg.classList.remove('active');
+        activeImg.style.opacity = '0';
+        activeImg.style.transform = 'translateX(0)';
+        wrapper.dataset.isAnimating = 'false';
+      }, 400);
+    }
+
+    function nextCardImage(btn) {
+      const wrapper = btn.closest('.image-wrapper');
+      const activeImg = wrapper.querySelector('.product-image.active');
+      if (!activeImg) return;
+      const colorId = activeImg.getAttribute('data-color-id');
+      const images = Array.from(wrapper.querySelectorAll('.product-image')).filter(img => img.getAttribute('data-color-id') === colorId);
+      
+      if (images.length <= 1) return;
+      const nextIndex = (images.indexOf(activeImg) + 1) % images.length;
+      animateSlide(btn, wrapper, activeImg, images[nextIndex], 'next');
+    }
+
+    function prevCardImage(btn) {
+      const wrapper = btn.closest('.image-wrapper');
+      const activeImg = wrapper.querySelector('.product-image.active');
+      if (!activeImg) return;
+      const colorId = activeImg.getAttribute('data-color-id');
+      const images = Array.from(wrapper.querySelectorAll('.product-image')).filter(img => img.getAttribute('data-color-id') === colorId);
+      
+      if (images.length <= 1) return;
+      const prevIndex = (images.indexOf(activeImg) - 1 + images.length) % images.length;
+      animateSlide(btn, wrapper, activeImg, images[prevIndex], 'prev');
+    }
+  </script>
+</body>
+</html>

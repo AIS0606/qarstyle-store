@@ -1,0 +1,299 @@
+{% extends "admin/admin_base_custom.html" %}
+
+{% block title %}Категории | QarStyle Admin{% endblock %}
+{% block page_title %}Категории{% endblock %}
+{% block page_subtitle %}Управление структурой каталога{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen bg-[#f8f8f8]">
+    <main class="flex-1 space-y-6">
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Categories list -->
+            <div class="col-span-1 bg-white rounded-2xl border border-black/5">
+                <div class="flex items-center justify-between p-5 border-b border-black/5">
+                    <h2 class="text-black">Категории</h2>
+                    <button onclick="openCategoryModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors">
+                        <i data-lucide="plus" class="w-3 h-3"></i> Добавить
+                    </button>
+                </div>
+                <div class="divide-y divide-black/5" id="category-list">
+                    {% for dept in departments %}
+                    <div class="dept-group">
+                        <div class="px-5 py-3 bg-black/5 text-xs font-semibold text-black/60 uppercase tracking-wider">
+                            {{ dept.name }}
+                        </div>
+                        {% for cat in dept.categories %}
+                        <button type="button" onclick="selectCategory('{{ cat.id }}')" id="btn-cat-{{ cat.id }}" class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-black/[0.02] transition-colors cat-button">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <p class="text-sm text-black">{{ cat.name }}</p>
+                                </div>
+                                <p class="text-xs text-black/40 mt-0.5">{{ cat.product_count|default:"0" }} товаров</p>
+                            </div>
+                            <i data-lucide="chevron-right" class="w-4 h-4 transition-colors text-black/20 cat-chevron"></i>
+                        </button>
+                        {% empty %}
+                        <div class="px-5 py-4 text-sm text-black/40 text-center">Нет категорий</div>
+                        {% endfor %}
+                    </div>
+                    {% empty %}
+                    <div class="px-5 py-4 text-sm text-black/40 text-center">Нет отделов</div>
+                    {% endfor %}
+                </div>
+
+                <!-- Empty Categories Section -->
+                {% if empty_categories %}
+                <div class="divide-y divide-black/5">
+                    <div class="px-5 py-3 bg-black/5 text-xs font-semibold text-black/60 uppercase tracking-wider">
+                        Пустые категории (Нет товаров)
+                    </div>
+                    {% for cat in empty_categories %}
+                    <button type="button" onclick="selectCategory('{{ cat.id }}')" id="btn-cat-{{ cat.id }}" class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-black/[0.02] transition-colors cat-button">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm text-black">{{ cat.name }}</p>
+                            </div>
+                            <p class="text-xs text-black/40 mt-0.5">0 товаров</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 transition-colors text-black/20 cat-chevron"></i>
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Category detail containers -->
+            <div class="col-span-2 relative min-h-[400px]">
+                
+                <!-- Empty State (Shown when nothing is selected) -->
+                <div id="empty-state" class="bg-white rounded-2xl border border-black/5 p-12 flex flex-col items-center justify-center text-center h-full absolute inset-0 transition-opacity">
+                    <div class="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center mb-3">
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-black/20"></i>
+                    </div>
+                    <p class="text-sm text-black/30">Выберите категорию для просмотра деталей</p>
+                </div>
+
+                <!-- Pre-render all category details but keep them hidden -->
+                {% for dept in departments %}
+                {% for cat in dept.categories %}
+                <div id="detail-cat-{{ cat.id }}" class="cat-detail hidden absolute inset-0 space-y-4">
+                    <!-- Info card -->
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h2 class="text-black mb-1">{{ cat.name }} <span class="text-black/40 text-sm ml-2">({{ dept.name }})</span></h2>
+                                <p class="text-xs text-black/40">/{{ cat.slug }}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-black/5 text-black/50 hover:bg-black/10 transition-colors">
+                                    <i data-lucide="edit-2" class="w-3 h-3"></i> Изменить
+                                </button>
+                                <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+                                    <i data-lucide="trash-2" class="w-3 h-3"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="p-4 bg-black/[0.02] rounded-xl">
+                                <p class="text-xs text-black/40 mb-1">Товаров</p>
+                                <p class="text-2xl text-black">{{ cat.product_count|default:"0" }}</p>
+                            </div>
+                            <div class="p-4 bg-black/[0.02] rounded-xl">
+                                <p class="text-xs text-black/40 mb-1">Продажи</p>
+                                <p class="text-lg text-black">{{ cat.sales|floatformat:"0"|default:"0" }} ₸</p>
+                            </div>
+                            <div class="p-4 bg-black/[0.02] rounded-xl">
+                                <p class="text-xs text-black/40 mb-1">Видимость</p>
+                                <div class="flex items-center mt-1.5">
+                                    <div onclick="toggleSwitch(this)" class="w-10 h-5 rounded-full relative cursor-pointer bg-black toggle-switch">
+                                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all left-[22px]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products in this category -->
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-black">Товары в категории</h3>
+                            <a href="/admin/store/product/?department={{ dept.original_id }}&category={{ cat.original_id }}" class="flex items-center gap-1 text-xs text-black/40 hover:text-black transition-colors">
+                                Все <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+                        <div class="space-y-2">
+                            {% for product in cat.products %}
+                            <div class="flex items-center gap-3 px-3 py-2 bg-black/[0.02] rounded-xl hover:bg-black/[0.04] transition-colors group">
+                                <!-- Product Image -->
+                                <div class="w-8 h-8 rounded-lg overflow-hidden bg-black/5 shrink-0">
+                                    {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover" />
+                                    {% else %}
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <i data-lucide="image" class="w-3 h-3 text-black/20"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <span class="text-sm text-black flex-1 truncate">{{ product.name }}</span>
+                                <span class="text-xs text-black/40 shrink-0">{{ product.price|floatformat:"0" }} ₸</span>
+                            </div>
+                            {% empty %}
+                            <div class="px-4 py-3 text-sm text-black/40 text-center">Нет товаров в этой категории</div>
+                            {% endfor %}
+                            {% if cat.product_count > 5 %}
+                            <p class="text-xs text-black/30 text-center pt-1">+{{ cat.product_count|add:"-5" }} ещё</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endfor %}
+
+                <!-- Empty Categories Details -->
+                {% for cat in empty_categories %}
+                <div id="detail-cat-{{ cat.id }}" class="cat-detail hidden absolute inset-0 space-y-4">
+                    <div class="bg-white rounded-2xl border border-black/5 p-6">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h2 class="text-black mb-1">{{ cat.name }} <span class="text-black/40 text-sm ml-2">(Пустая категория)</span></h2>
+                                <p class="text-xs text-black/40">/{{ cat.slug }}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+                                    <i data-lucide="trash-2" class="w-3 h-3"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-black/[0.02] rounded-xl mb-4">
+                            <p class="text-sm text-black">В этой категории пока нет товаров. Вы можете выбрать её при создании или редактировании товара.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal for adding new category -->
+<div id="addCategoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeCategoryModal()"></div>
+    
+    <!-- Modal content -->
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+        <div class="flex items-center justify-between p-5 border-b border-black/5">
+            <h3 class="text-lg font-medium text-black">Добавить категорию</h3>
+            <button type="button" onclick="closeCategoryModal()" class="text-black/40 hover:text-black transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <form method="POST" action="{% url 'custom_admin_categories' %}" class="p-5">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_category">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-black/60 mb-1">Название категории</label>
+                    <input type="text" name="name" id="cat_name" required oninput="generateSlug()"
+                           class="w-full px-4 py-2.5 bg-black/[0.02] border border-transparent rounded-xl text-sm text-black focus:border-black/20 focus:bg-white focus:outline-none transition-colors" 
+                           placeholder="Например: Худи">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-black/60 mb-1">URL-имя (Slug)</label>
+                    <input type="text" name="slug" id="cat_slug" required 
+                           class="w-full px-4 py-2.5 bg-black/[0.02] border border-transparent rounded-xl text-sm text-black focus:border-black/20 focus:bg-white focus:outline-none transition-colors" 
+                           placeholder="Например: hoodies">
+                </div>
+            </div>
+            
+            <div class="mt-8 flex items-center justify-end gap-3">
+                <button type="button" onclick="closeCategoryModal()" class="px-5 py-2.5 rounded-xl text-sm text-black hover:bg-black/5 transition-colors">
+                    Отмена
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl text-sm bg-black text-white hover:bg-black/80 transition-colors">
+                    Сохранить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+    function selectCategory(id) {
+        // Hide empty state
+        document.getElementById('empty-state').classList.add('hidden');
+        
+        // Hide all details
+        document.querySelectorAll('.cat-detail').forEach(el => el.classList.add('hidden'));
+        
+        // Show selected detail
+        const detail = document.getElementById('detail-cat-' + id);
+        if(detail) detail.classList.remove('hidden');
+        
+        // Reset all buttons styling
+        document.querySelectorAll('.cat-button').forEach(btn => {
+            btn.classList.remove('bg-black/[0.02]');
+        });
+        document.querySelectorAll('.cat-chevron').forEach(icon => {
+            icon.classList.remove('text-black');
+            icon.classList.add('text-black/20');
+        });
+        
+        // Add styling to selected button
+        const btn = document.getElementById('btn-cat-' + id);
+        if(btn) {
+            btn.classList.add('bg-black/[0.02]');
+            const chevron = btn.querySelector('.cat-chevron');
+            if(chevron) {
+                chevron.classList.remove('text-black/20');
+                chevron.classList.add('text-black');
+            }
+        }
+    }
+
+    function openCategoryModal() {
+        document.getElementById('addCategoryModal').classList.remove('hidden');
+    }
+
+    function closeCategoryModal() {
+        document.getElementById('addCategoryModal').classList.add('hidden');
+    }
+
+    function generateSlug() {
+        const name = document.getElementById('cat_name').value;
+        const slug = name.toLowerCase()
+            .replace(/[^\w\sа-я]/gi, '') // remove special chars
+            .replace(/\s+/g, '-');       // replace spaces with dash
+        // Very simple basic translation for ru->en (or leave as is, django will handle english slugs well)
+        const ru2en = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+            'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+            'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
+            'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        };
+        const enSlug = slug.split('').map(c => ru2en[c] || c).join('');
+        document.getElementById('cat_slug').value = enSlug;
+    }
+
+    function toggleSwitch(element) {
+        const knob = element.querySelector('div');
+        if (element.classList.contains('off')) {
+            element.classList.remove('off', 'bg-black/20');
+            element.classList.add('bg-black');
+            knob.classList.remove('left-0.5');
+            knob.classList.add('left-[22px]');
+        } else {
+            element.classList.add('off', 'bg-black/20');
+            element.classList.remove('bg-black');
+            knob.classList.add('left-0.5');
+            knob.classList.remove('left-[22px]');
+        }
+    }
+</script>
+{% endblock %}

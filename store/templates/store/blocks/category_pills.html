@@ -1,0 +1,5 @@
+<section data-block-id="{{ block.id }}" {% if request.GET.preview and not block.is_active %}style="opacity: 0.4; outline: 2px dashed red;"{% endif %} class="category-pills">
+  {% for item in block.items.all %}
+    <a href="{{ item.link }}" class="pill">{{ item.title }}</a>
+  {% endfor %}
+</section>

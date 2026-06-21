@@ -1,0 +1,569 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ product.name }} - QarStyle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'store/styles.css' %}?v=23">
+  <style>
+    /* Reset & Base */
+    body { background-color: #fff; margin: 0; padding: 0; }
+
+    /* The Main Wrapper containing the whole product section */
+    .np-product-section {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Left Content (Dictates the total height) */
+    .np-left-content {
+      width: 100%;
+    }
+
+    /* Images taking FULL width */
+    .np-slider-wrapper {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    .np-slider-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+    .np-slide {
+      flex: 0 0 33.3333%; /* Strictly 3 visible columns */
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      border-right: 1px solid #fff;
+    }
+
+    /* Details area restricted to 62% width so it doesn't overlap with panel later */
+    .np-details-wrapper {
+      width: 62%;
+      padding: 60px 80px;
+      box-sizing: border-box;
+    }
+
+    .np-badges {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+    .np-badge h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .np-badge p { font-size: 13px; color: #666; line-height: 1.6; }
+    .np-desc-text { font-size: 14px; line-height: 1.8; color: #333; margin-bottom: 40px; }
+
+    /* Accordions */
+    .np-acc-container { border-top: 1px solid #eee; }
+    .np-acc-item { border-bottom: 1px solid #eee; }
+    .np-acc-btn {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 0; background: none; border: none; font-size: 15px; cursor: pointer;
+    }
+    .np-acc-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; font-size: 14px; color: #555; }
+    .np-acc-inner { padding-bottom: 24px; }
+
+    /* RIGHT COLUMN TRACK (Absolute positioning over the right side) */
+    .np-sticky-track {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 38%; /* Occupies the right 38% */
+      height: 100%; /* Goes from top of images to bottom of details */
+      pointer-events: none; /* Clicks pass through to images underneath */
+      z-index: 10;
+    }
+
+    /* THE GLASSMORPHISM STICKY PANEL */
+    .np-sticky-panel {
+      position: sticky;
+      /* Панель примерно 500px высотой. 250px - это половина. */
+      top: calc(50vh - 250px); /* Залипание по центру экрана без transform */
+      margin-top: calc(50vh - 250px); /* Стартовая позиция по центру при загрузке */
+      margin-left: 65px; 
+      margin-right: 65px;
+      margin-bottom: 0px; /* Убрал отступ, чтобы панель могла доехать до самого низа левого блока */
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.85); /* Glass effect */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      pointer-events: auto; /* Re-enable clicks on the panel */
+    }
+
+    /* Panel UI Elements */
+    .np-bread { font-size: 11px; color: #888; margin-bottom: 12px; text-transform: uppercase; }
+    .np-bread a { color: #888; text-decoration: none; }
+    .np-title { font-size: 22px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; line-height: 1.2; }
+    .np-price { font-size: 18px; margin-bottom: 30px; color: #333; }
+    .np-label { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: block; }
+    
+    .np-colors { display: flex; gap: 8px; margin-bottom: 25px; }
+    .np-color-dot { width: 28px; height: 28px; border: 1px solid transparent; cursor: pointer; }
+    .np-color-dot.active { outline: 2px solid #000; outline-offset: 2px; }
+    
+    .np-size-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .np-size-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+    .np-size-btn {
+      min-width: 50px; height: 40px; border: 1px solid #ddd; background: #fff;
+      font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .np-size-btn.active { background: #000; color: #fff; border-color: #000; }
+    .np-size-btn.disabled { color: #ccc; text-decoration: line-through; cursor: not-allowed; border-color: #eee; }
+
+    .np-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+    .np-add-btn {
+      flex: 1; height: 55px; background: #000; color: #fff; border: none;
+      font-weight: 600; text-transform: uppercase; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; text-decoration: none;
+    }
+    .np-wish-btn {
+      width: 55px; height: 55px; border: 1px solid #000; background: transparent;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      color: #000;
+      transition: all 0.2s ease;
+    }
+    .np-wish-btn svg {
+      fill: none;
+      stroke: currentColor;
+    }
+    .np-wish-btn.active {
+      border-color: #e60023;
+      background: rgba(230, 0, 35, 0.12);
+      color: #e60023;
+    }
+    .np-wish-btn.active svg {
+      fill: #e60023;
+      stroke: #e60023;
+    }
+
+    .np-paypal {
+      display: flex; align-items: center; gap: 10px; padding-top: 15px;
+      border-top: 1px solid #eee; font-size: 12px; color: #666;
+    }
+
+    /* Related Section (Outside the main wrapper) */
+    .np-related { padding: 80px; border-top: 1px solid #eee; background: #fff; position: relative; z-index: 20; }
+    .np-related h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
+    .np-related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+    .np-rel-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; margin-bottom: 15px; background: #f5f5f5; }
+    .np-rel-card h3 { font-size: 14px; font-weight: 400; margin-bottom: 5px; }
+    .np-rel-card a { text-decoration: none; color: inherit; }
+    .np-rel-card p { font-size: 14px; color: #666; }
+
+    /* Slider controls for images */
+    .sl-controls { position: absolute; bottom: 32px; left: 32px; display: flex; align-items: center; gap: 16px; z-index: 5; }
+    .sl-btn { width: 52px; height: 52px; background: rgba(255,255,255,.45); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.3); cursor: pointer; display: flex; align-items: center; justify-content: center; color: #000; }
+    .sl-dots { display: flex; gap: 7px; margin-left: 10px; }
+    .sl-dot { width: 10px; height: 10px; background: rgba(255,255,255,.5); border: 1px solid rgba(0,0,0,.25); cursor: pointer; }
+    .sl-dot.active { background: #000; border-color: #000; }
+
+    @media (max-width: 1024px) {
+      .np-slider-wrapper { height: 60vh; }
+      .np-details-wrapper { width: 100%; padding: 40px 20px; }
+      .np-sticky-track { position: static; width: 100%; height: auto; }
+      .np-sticky-panel { margin: 20px; position: static; }
+      .np-related { padding: 40px 20px; }
+      .np-related-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">БЕСПЛАТНАЯ ДОСТАВКА ПО КАЗАХСТАНУ ОТ 50 000 ₸ - ВОЗВРАТ 30 ДНЕЙ</div>
+
+  <header class="header">
+    <div class="header-left">
+      <div class="hamburger" id="hamburger">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </div>
+      <a href="{% url 'index' %}" class="logo">
+        <img src="{% static 'store/QS.svg' %}" alt="QarStyle Logo">
+      </a>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="{% url 'catalog' %}?department=mens">Мужской</a>
+      <a href="{% url 'catalog' %}?department=womens">Женский</a>
+      <a href="{% url 'catalog' %}?department=kids">Детский</a>
+      <a href="{% url 'catalog' %}?department=bags-gear">Сумки и снаряжение</a>
+      <a href="{% url 'catalog' %}?sale=1">Распродажа</a>
+      <a href="{% url 'catalog' %}?resale=1">Перепродажа</a>
+      <a href="{% url 'about' %}">О нас</a>
+    </nav>
+
+    <div class="header-right">
+      <form class="search-bar" method="GET" action="{% url 'catalog' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" name="q" placeholder="Поиск" required>
+        <button type="submit" style="display:none;"></button>
+      </form>
+      <div class="icons">
+        <a href="{% url 'cart' %}" style="text-decoration: none; display: flex; align-items: center; position: relative;">
+          <img src="{% static 'store/image-2_1.svg' %}" alt="Cart" style="cursor: pointer;">
+          {% if cart_count > 0 %}
+          <span class="nav-badge">{{ cart_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'favorites' %}" class="header-fav-btn" aria-label="Избранное" style="text-decoration: none; display: flex; align-items: center; color: #000; position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+          {% if favorites_count > 0 %}
+          <span class="nav-badge">{{ favorites_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}" style="text-decoration: none; display: flex; align-items: center; margin-left: 10px;">
+          <img src="{% static 'store/free-icon-user-5617164.svg' %}" alt="User" style="cursor: pointer; width: 24px; height: 24px;">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="np-product-section">
+      <div class="np-left-content">
+        <div class="np-slider-wrapper" id="sliderWrapper">
+            <div class="np-slider-track" id="sliderTrack">
+              {% if product.image %}
+                <div class="np-slide default-slide" style="background-image: url('{{ product.image.url }}');"></div>
+              {% endif %}
+              {% for img in product.images.all %}
+                <div class="np-slide color-slide" data-color-id="{{ img.color_id|default:'none' }}" style="background-image: url('{{ img.image.url }}');"></div>
+              {% endfor %}
+            </div>
+          
+          <div class="sl-controls" id="sliderControls">
+            <div style="display:flex;gap:2px">
+              <button class="sl-btn" id="btnPrev"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <button class="sl-btn" id="btnNext"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none"><polyline points="9 18 15 12 9 6"/></svg></button>
+            </div>
+            <div class="sl-dots" id="sliderDots">
+              <!-- Dots generated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Details (Constrained to 62% width so it doesn't go under the panel) -->
+        <div class="np-details-wrapper">
+          <div class="np-badges">
+            <div class="np-badge">
+              <h4>ПРОЧНАЯ ТКАНЬ РИПСТОП</h4>
+              <p>Устойчива к порезам и разрывам благодаря особому армированному плетению рипстоп.</p>
+            </div>
+            <div class="np-badge">
+              <h4>ГЕРМЕТИЧНЫЕ ШВЫ</h4>
+              <p>Проклеенные швы надежно защищают от попадания влаги внутрь куртки.</p>
+            </div>
+          </div>
+
+          <div class="np-desc-text">
+            {{ product.description|default:"Эта модель, созданная для максимальной защиты от холода и ветра, сочетает в себе классический фирменный крой, регулируемый капюшон и теплые материалы для любых погодных условий." }}
+          </div>
+
+          <div class="np-acc-container">
+            <div class="np-acc-item">
+              <button class="np-acc-btn">Размер и посадка <span>+</span></button>
+              <div class="np-acc-content"><div class="np-acc-inner">Классическая стандартная посадка (Regular fit). Рекомендуем выбирать ваш привычный размер.</div></div>
+            </div>
+            <div class="np-acc-item">
+              <button class="np-acc-btn">Характеристики <span>+</span></button>
+              <div class="np-acc-content"><div class="np-acc-inner">Ветро- и влагозащита, регулируемые капюшон и подол, удобные карманы.</div></div>
+            </div>
+            <div class="np-acc-item">
+              <button class="np-acc-btn">Доставка и возврат <span>+</span></button>
+              <div class="np-acc-content"><div class="np-acc-inner">Бесплатная доставка по всему Казахстану при заказе от 50 000 ₸. Возможность легкого возврата в течение 30 дней.</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT TRACK (Absolute overlay for the sticky panel) -->
+      <div class="np-sticky-track">
+        
+        <!-- THE STICKY PANEL -->
+        <div class="np-sticky-panel">
+          <div class="np-bread"><a href="{% url 'index' %}">Главная</a> &rsaquo; {{ product.category.name }}</div>
+          <h1 class="np-title">{{ product.name }}</h1>
+          <div class="np-price">{{ product.price }} ₸</div>
+
+          <span class="np-label">Цвет</span>
+          <div class="np-colors" id="color-swatches">
+            <!-- Original product color (always shown first) -->
+            <div class="np-color-dot active"
+                 style="background: {{ product.original_color.hex_code|default:'#1a1a1a' }};"
+                 title="{{ product.original_color.name|default:'Оригинал' }}"
+                 data-color-id="original"
+                 onclick="selectColor(this)"
+                 data-label="{{ product.original_color.name|default:'Оригинал' }}">
+            </div>
+            <!-- Color variants -->
+            {% for color in product_colors %}
+              <div class="np-color-dot"
+                   style="background: {{ color.hex_code|default:'#888' }};"
+                   title="{{ color.name }}"
+                   data-color-id="{{ color.id }}"
+                   data-label="{{ color.name }}"
+                   onclick="selectColor(this)">
+              </div>
+            {% endfor %}
+          </div>
+          <p id="selected-color-label" style="font-size:12px;color:#888;margin-top:-15px;margin-bottom:15px;">Оригинал</p>
+
+          {% if recommended_size %}
+          <div style="background: #fdfaf6; border: 1px solid #f3e8d2; padding: 12px 15px; margin-bottom: 20px; font-size: 13px; display: flex; align-items: center; gap: 12px; border-radius: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.5"><path d="M20.38 3.46L16 2a8.96 8.96 0 0 1-3.99 0L8 2 3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+            <span style="color: #663c00; line-height: 1.4;">На основе ваших параметров тела мы рекомендуем размер <strong style="font-weight: 700;">{{ recommended_size }}</strong></span>
+          </div>
+          {% endif %}
+
+          <div class="np-size-row">
+            <span class="np-label">Размер:</span>
+            <span style="font-size:11px; text-decoration:underline; cursor:pointer;">Таблица размеров</span>
+          </div>
+          <div class="np-size-grid" id="size-grid">
+            <!-- Filled dynamically by JS based on selected color -->
+          </div>
+
+          <form method="POST" action="{% url 'add_to_cart' product.id %}" class="np-actions" style="display:flex;gap:10px;margin-bottom:20px;">
+            {% csrf_token %}
+            <input type="hidden" name="color_id" id="cart-color-id" value="original">
+            <input type="hidden" name="size" id="cart-size" value="">
+            <button type="submit" class="np-add-btn">Добавить в корзину</button>
+            <button type="button" class="np-wish-btn{% if is_favorite %} active{% endif %}" aria-label="Добавить в избранное"
+              onclick="this.closest('form').action='{% url 'add_to_favorites' product.id %}'; this.closest('form').submit();">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+            </button>
+          </form>
+
+          <div class="np-paypal" style="border-top: 1px solid #eee; padding-top: 15px;">
+            <strong style="color:#f14635; font-size: 14px;">Kaspi</strong><strong style="color:#000; font-size: 14px; margin-left: 2px;">QR</strong>
+            <span style="font-size: 12px; color: #666; margin-left: 8px;">Оплата частями Kaspi Red. <a href="#" style="color:inherit;">Подробнее</a></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- YOU MAY ALSO LIKE (Outside the main wrapper, stops sticky) -->
+    <section class="np-related">
+      <h2>Вам также может понравиться</h2>
+      <div class="np-related-grid">
+        {% for rel in related_products %}
+        <div class="np-rel-card">
+          <a href="{% url 'product_detail' rel.id %}">
+            {% if rel.image %}<img src="{{ rel.image.url }}" alt="{{ rel.name }}">{% else %}<img src="{% static 'store/Traveler Jacket Blue Academy - 1.jpg' %}" alt="{{ rel.name }}">{% endif %}
+          </a>
+          <h3><a href="{% url 'product_detail' rel.id %}">{{ rel.name }}</a></h3>
+          <p>{{ rel.price }} ₸</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  {% include 'store/footer.html' %}
+
+  <!-- Data for JS -->
+  <script>
+    const COLOR_IMAGES   = {{ color_images_json|safe }};
+    const EXTRA_IMAGES   = {{ extra_image_urls|safe }};
+    const SIZE_DATA      = {{ size_data_json|safe }};
+    const BASE_SIZES     = {{ base_sizes_json|safe }};
+    const COVER_URL      = "{% if product.image %}{{ product.image.url }}{% endif %}";
+  </script>
+
+  <script>
+    // Accordions logic
+    document.querySelectorAll('.np-acc-btn').forEach(btn => {
+      btn.onclick = () => {
+        const content = btn.nextElementSibling;
+        const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+        document.querySelectorAll('.np-acc-content').forEach(c => c.style.maxHeight = '0px');
+        if (!isOpen) content.style.maxHeight = content.scrollHeight + 'px';
+      };
+    });
+
+    // Slider & Color Logic
+    const track = document.getElementById('sliderTrack');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const sliderDots = document.getElementById('sliderDots');
+    const controls = document.getElementById('sliderControls');
+    
+    let isAnimating = false;
+    let currentSlide = 0;
+    let nextHandler, prevHandler; // declare here so buildSlidesFromUrls can remove old listeners
+    
+    // ── Build slides from URL array ───────────────────────────
+    function buildSlidesFromUrls(urls) {
+      if (!track) return;
+      track.innerHTML = '';
+      sliderDots.innerHTML = '';
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0)';
+      currentSlide = 0;
+      isAnimating = false;
+      if (btnNext && nextHandler) btnNext.removeEventListener('click', nextHandler);
+      if (btnPrev && prevHandler) btnPrev.removeEventListener('click', prevHandler);
+
+      if (!urls || urls.length === 0) {
+        if (COVER_URL) urls = [COVER_URL];
+        else { if (controls) controls.style.display = 'none'; return; }
+      }
+
+      // Duplicate until we have at least 3 for the 3-column layout
+      let padded = [...urls];
+      while (padded.length < 3) padded = [...padded, ...urls];
+
+      padded.forEach(url => {
+        const div = document.createElement('div');
+        div.className = 'np-slide';
+        div.style.backgroundImage = `url('${url}')`;
+        track.appendChild(div);
+      });
+
+      const totalSlides = urls.length;
+      if (totalSlides <= 1) {
+        if (controls) controls.style.display = 'none';
+      } else {
+        if (controls) controls.style.display = 'flex';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'sl-dot' + (i === 0 ? ' active' : '');
+          dot.onclick = () => goToSlide(i, totalSlides);
+          sliderDots.appendChild(dot);
+        }
+        nextHandler = () => {
+          if (isAnimating) return; isAnimating = true;
+          currentSlide = (currentSlide + 1) % totalSlides;
+          track.style.transition = 'transform 0.5s ease-in-out';
+          track.style.transform = 'translateX(-33.3333%)';
+          setTimeout(() => {
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0)';
+            track.appendChild(track.firstElementChild);
+            updateDots(); isAnimating = false;
+          }, 500);
+        };
+        prevHandler = () => {
+          if (isAnimating) return; isAnimating = true;
+          currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+          track.insertBefore(track.lastElementChild, track.firstElementChild);
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(-33.3333%)';
+          void track.offsetWidth;
+          track.style.transition = 'transform 0.5s ease-in-out';
+          track.style.transform = 'translateX(0)';
+          setTimeout(() => { updateDots(); isAnimating = false; }, 500);
+        };
+        btnNext.addEventListener('click', nextHandler);
+        btnPrev.addEventListener('click', prevHandler);
+      }
+    }
+
+    function updateDots() {
+      document.querySelectorAll('.sl-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    function goToSlide(slideIndex, totalSlides) {
+      if (isAnimating) return; isAnimating = true;
+      const slidesToMove = slideIndex - currentSlide;
+      track.style.transition = 'transform 0.5s ease-in-out';
+      track.style.transform = `translateX(${-slidesToMove * 33.3333}%)`;
+      setTimeout(() => {
+        track.style.transition = 'none'; track.style.transform = 'translateX(0)';
+        if (slidesToMove > 0) { for (let i = 0; i < slidesToMove; i++) track.appendChild(track.firstElementChild); }
+        else { for (let i = 0; i > slidesToMove; i--) track.insertBefore(track.lastElementChild, track.firstElementChild); }
+        currentSlide = slideIndex; updateDots(); isAnimating = false;
+      }, 500);
+    }
+
+    // ── Render sizes for a given color ────────────────────────
+    function renderSizes(colorId) {
+      const grid = document.getElementById('size-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      
+      const cartSizeInput = document.getElementById('cart-size');
+      if (cartSizeInput) cartSizeInput.value = ''; // reset on color change
+
+      const sizes = colorId && SIZE_DATA[colorId] ? SIZE_DATA[colorId] : BASE_SIZES;
+      if (!sizes || sizes.length === 0) {
+        grid.innerHTML = '<button class="np-size-btn disabled" type="button">Размеры не указаны</button>';
+        return;
+      }
+      sizes.forEach((s, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'np-size-btn' + (s.stock === 0 ? ' disabled' : '') + (i === 0 && s.stock > 0 ? ' active' : '');
+        btn.textContent = s.name;
+        btn.title = s.stock > 0 ? `В наличии: ${s.stock}` : 'Нет в наличии';
+        if (s.stock > 0) {
+            btn.onclick = () => {
+                grid.querySelectorAll('.np-size-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (cartSizeInput) cartSizeInput.value = s.name;
+            };
+        }
+        // Auto-select first in-stock size
+        if (i === 0 && s.stock > 0 && cartSizeInput) {
+            cartSizeInput.value = s.name;
+        }
+        grid.appendChild(btn);
+      });
+    }
+
+    // ── Color swatch click ─────────────────────────────────────
+    function selectColor(dot) {
+      document.querySelectorAll('.np-color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      const colorId = dot.getAttribute('data-color-id');
+      const label = dot.getAttribute('data-label') || dot.getAttribute('title') || '';
+      const labelEl = document.getElementById('selected-color-label');
+      if (labelEl) labelEl.textContent = label;
+
+      // Sync hidden input for cart form
+      const cartColorInput = document.getElementById('cart-color-id');
+      if (cartColorInput) cartColorInput.value = colorId;
+      // Reset size when color changes
+      const cartSizeInput = document.getElementById('cart-size');
+      if (cartSizeInput) cartSizeInput.value = '';
+
+      let urls;
+      if (colorId === 'original' || colorId === 'none') {
+        urls = COVER_URL ? [COVER_URL, ...EXTRA_IMAGES] : [...EXTRA_IMAGES];
+      } else {
+        urls = COLOR_IMAGES[colorId] || [];
+        if (urls.length === 0) urls = COVER_URL ? [COVER_URL, ...EXTRA_IMAGES] : [...EXTRA_IMAGES];
+      }
+      buildSlidesFromUrls(urls);
+      renderSizes(colorId === 'original' || colorId === 'none' ? null : colorId);
+    }
+
+    // ── Init on page load ──────────────────────────────────────
+    const firstDot = document.querySelector('.np-color-dot.active') || document.querySelector('.np-color-dot');
+    if (firstDot) {
+      selectColor(firstDot);
+    } else {
+      // No colors defined: show extra or cover images
+      let urls = EXTRA_IMAGES.length ? EXTRA_IMAGES : (COVER_URL ? [COVER_URL] : []);
+      buildSlidesFromUrls(urls);
+      renderSizes(null);
+    }
+  </script>
+  <script src="{% static 'store/script.js' %}"></script>
+  {% include 'store/ai_assistant.html' %}
+</body>
+</html>

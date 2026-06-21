@@ -1,0 +1,176 @@
+{% extends "admin/admin_base_custom.html" %}
+
+{% block title %}Маркетинг | QarStyle Admin{% endblock %}
+{% block page_title %}Маркетинг{% endblock %}
+{% block page_subtitle %}Промо-коды, рассылки и кампании{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen bg-[#f8f8f8]">
+    <main class="flex-1 p-8 space-y-6">
+        <!-- Stats -->
+        <div class="grid grid-cols-4 gap-3">
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <div class="w-9 h-9 rounded-xl bg-black flex items-center justify-center mb-3">
+                    <i data-lucide="tag" class="w-4 h-4 text-white"></i>
+                </div>
+                <p class="text-xs text-black/40">Промо-коды</p>
+                <p class="text-xl text-black mt-1">12 активных</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <div class="w-9 h-9 rounded-xl bg-black flex items-center justify-center mb-3">
+                    <i data-lucide="percent" class="w-4 h-4 text-white"></i>
+                </div>
+                <p class="text-xs text-black/40">Использований</p>
+                <p class="text-xl text-black mt-1">682</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <div class="w-9 h-9 rounded-xl bg-black flex items-center justify-center mb-3">
+                    <i data-lucide="send" class="w-4 h-4 text-white"></i>
+                </div>
+                <p class="text-xs text-black/40">Рассылок</p>
+                <p class="text-xl text-black mt-1">24 отправлено</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-black/5">
+                <div class="w-9 h-9 rounded-xl bg-black flex items-center justify-center mb-3">
+                    <i data-lucide="users" class="w-4 h-4 text-white"></i>
+                </div>
+                <p class="text-xs text-black/40">Охват</p>
+                <p class="text-xl text-black mt-1">8 420 чел.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Promo codes -->
+            <div class="bg-white rounded-2xl border border-black/5">
+                <div class="flex items-center justify-between p-5 border-b border-black/5">
+                    <div>
+                        <h2 class="text-black">Промо-коды</h2>
+                        <p class="text-xs text-black/40 mt-0.5">Скидочные коды</p>
+                    </div>
+                    <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors">
+                        <i data-lucide="plus" class="w-3 h-3"></i> Создать
+                    </button>
+                </div>
+                <div class="divide-y divide-black/5">
+                    {% for promo in promos %}
+                    <div class="px-5 py-4 hover:bg-black/[0.02] transition-colors">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-sm text-black bg-black/5 px-2 py-0.5 rounded">{{ promo.code }}</span>
+                                <span class="text-xs px-2 py-0.5 rounded-full 
+                                    {% if promo.status == 'Активен' %}bg-black text-white
+                                    {% else %}bg-black/10 text-black/40{% endif %}">
+                                    {{ promo.status }}
+                                </span>
+                            </div>
+                            <span class="text-sm text-black">{{ promo.value }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="h-1 bg-black/5 rounded-full overflow-hidden w-32">
+                                        <div class="h-full bg-black rounded-full" style="width: {% widthratio promo.used promo.limit 100 %}%"></div>
+                                    </div>
+                                    <span class="text-xs text-black/40">{{ promo.used }}/{{ promo.limit }}</span>
+                                </div>
+                                <p class="text-xs text-black/30">До: {{ promo.expiry }}</p>
+                            </div>
+                            <span class="text-xs text-black/30">{{ promo.type }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Campaigns -->
+            <div class="bg-white rounded-2xl border border-black/5">
+                <div class="flex items-center justify-between p-5 border-b border-black/5">
+                    <div>
+                        <h2 class="text-black">Кампании</h2>
+                        <p class="text-xs text-black/40 mt-0.5">Email и Push рассылки</p>
+                    </div>
+                    <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors">
+                        <i data-lucide="plus" class="w-3 h-3"></i> Создать
+                    </button>
+                </div>
+                <div class="divide-y divide-black/5">
+                    {% for camp in campaigns %}
+                    <div class="px-5 py-4 hover:bg-black/[0.02] transition-colors">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <p class="text-sm text-black">{{ camp.name }}</p>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="text-xs text-black/40">{{ camp.type }}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-full 
+                                        {% if camp.status == 'Отправлено' %}bg-black text-white
+                                        {% elif camp.status == 'Запланировано' %}bg-amber-50 text-amber-700
+                                        {% endif %}">
+                                        {{ camp.status }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 text-xs text-emerald-600">
+                                <i data-lucide="trending-up" class="w-3 h-3"></i>
+                                <span>{{ camp.orders }} заказов</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-black/[0.02] rounded-lg p-2 text-center">
+                                <p class="text-sm text-black">{{ camp.sent }}</p>
+                                <p class="text-xs text-black/30">Отправлено</p>
+                            </div>
+                            <div class="bg-black/[0.02] rounded-lg p-2 text-center">
+                                <p class="text-sm text-black">{{ camp.opened }}</p>
+                                <p class="text-xs text-black/30">Открыто</p>
+                            </div>
+                            <div class="bg-black/[0.02] rounded-lg p-2 text-center">
+                                <p class="text-sm text-black">{{ camp.clicks }}</p>
+                                <p class="text-xs text-black/30">Переходы</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter form placeholder -->
+        <div class="bg-white rounded-2xl border border-black/5 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-black">Новая рассылка</h2>
+                    <p class="text-xs text-black/40 mt-0.5">Быстрое создание email-кампании</p>
+                </div>
+                <i data-lucide="gift" class="w-5 h-5 text-black/20"></i>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs text-black/40 block mb-1.5">Тема письма</label>
+                    <input type="text" placeholder="Новая коллекция QarStyle..." class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black/30 outline-none focus:bg-black/[0.08] transition-colors" />
+                </div>
+                <div>
+                    <label class="text-xs text-black/40 block mb-1.5">Сегмент</label>
+                    <select class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors appearance-none">
+                        <option>Все клиенты</option>
+                        <option>VIP клиенты</option>
+                        <option>Постоянные</option>
+                        <option>Новые</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-3">
+                <label class="text-xs text-black/40 block mb-1.5">Содержание</label>
+                <textarea placeholder="Текст рассылки..." rows="3" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black/30 outline-none focus:bg-black/[0.08] transition-colors resize-none"></textarea>
+            </div>
+            <div class="flex items-center justify-end gap-2 mt-3">
+                <button class="px-4 py-2 rounded-full text-xs bg-black/5 text-black/50 hover:bg-black/10 transition-colors">
+                    Предпросмотр
+                </button>
+                <button class="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors">
+                    <i data-lucide="send" class="w-3 h-3"></i> Отправить
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% load static %}
+<footer class="footer">
+  <div class="footer-top">
+    <!-- Brand Info -->
+    <div class="footer-brand-col">
+      <a href="{% url 'index' %}" class="footer-brand-logo">
+        <img src="{% static 'store/QS.svg' %}" alt="QarStyle Logo" style="filter: invert(1); width: 32px; height: 32px;">
+        <span>QarStyle</span>
+      </a>
+      <p class="footer-brand-text">
+        Премиальный бренд зимней и повседневной одежды в Казахстане. Стиль, комфорт и инновации в каждой детали.
+      </p>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="#" aria-label="Telegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </a>
+        <a href="#" aria-label="TikTok">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Catalog Navigation -->
+    <div class="footer-brand-col">
+      <h4 class="footer-col-title">Каталог</h4>
+      <div class="footer-col-links">
+        <a href="{% url 'catalog' %}?department=mens">Мужская коллекция</a>
+        <a href="{% url 'catalog' %}?department=womens">Женская коллекция</a>
+        <a href="{% url 'catalog' %}?department=kids">Детская коллекция</a>
+        <a href="{% url 'catalog' %}?department=bags-gear">Сумки и снаряжение</a>
+        <a href="{% url 'catalog' %}?sale=1">Распродажа</a>
+        <a href="{% url 'catalog' %}?resale=1">Перепродажа</a>
+      </div>
+    </div>
+
+    <!-- Customer Support -->
+    <div class="footer-brand-col">
+      <h4 class="footer-col-title">Поддержка</h4>
+      <div class="footer-col-links">
+        <a href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}">Статус заказа</a>
+        <a href="{% url 'about' %}">Доставка и оплата</a>
+        <a href="{% url 'about' %}">Условия возврата</a>
+        <a href="{% url 'about' %}">Частые вопросы</a>
+        <a href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}">Личный кабинет</a>
+        <a href="{% url 'favorites' %}">Избранное</a>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="footer-newsletter-col">
+      <h4 class="footer-col-title">Рассылка</h4>
+      <p class="footer-newsletter-text">Подпишитесь на новости QarStyle, чтобы первыми узнавать о новых коллекциях и эксклюзивных предложениях.</p>
+      <form class="footer-newsletter-form" onsubmit="event.preventDefault(); alert('Спасибо за подписку!');">
+        <div class="footer-input-group">
+          <input type="email" placeholder="Ваш Email" class="footer-input" required>
+          <button type="submit" class="footer-submit-btn">ОК</button>
+        </div>
+        <div class="footer-checkbox-group">
+          <input type="checkbox" id="footer-privacy" required>
+          <label for="footer-privacy">Я согласен на обработку персональных данных в соответствии с <a href="#">Политикой конфиденциальности</a>.</label>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-left">
+      <div class="footer-legal-links">
+        <a href="#">Условия продажи</a>
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Использование Cookies</a>
+        <a href="#">Публичная оферта</a>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2026 QarStyle. Все права защищены. Разработано в рамках дипломного проекта.
+      </div>
+    </div>
+    <div class="footer-bottom-right">
+      <div class="footer-payments">
+        <span>Способы оплаты:</span>
+        <div class="footer-payment-icons">
+          <div class="footer-payment-badge">KASPI PAY</div>
+          <div class="footer-payment-badge">VISA</div>
+          <div class="footer-payment-badge">MASTERCARD</div>
+          <div class="footer-payment-badge">CASH</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
