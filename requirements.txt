@@ -12,3 +12,4 @@ whitenoise
 requests
 python-decouple
 psycopg2-binary
+PyJWT
