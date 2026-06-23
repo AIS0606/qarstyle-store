@@ -33,3 +33,5 @@ typer==0.20.0
 typer-slim==0.20.0
 uritemplate==4.2.0
 wheel==0.45.1
+gunicorn
+whitenoise
