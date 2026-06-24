@@ -135,6 +135,26 @@ class PromoCode(models.Model):
             return False
         return True
 
+class Campaign(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Название рассылки")
+    type = models.CharField(max_length=50, default="Email", verbose_name="Тип")
+    subject = models.CharField(max_length=255, verbose_name="Тема письма")
+    message = models.TextField(verbose_name="Текст рассылки")
+    sent_count = models.PositiveIntegerField(default=0, verbose_name="Отправлено")
+    opened_count = models.PositiveIntegerField(default=0, verbose_name="Открыто")
+    clicks_count = models.PositiveIntegerField(default=0, verbose_name="Переходы")
+    orders_count = models.PositiveIntegerField(default=0, verbose_name="Заказы")
+    status = models.CharField(max_length=50, default="Отправлено", verbose_name="Статус")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Кампания"
+        verbose_name_plural = "Кампании"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} ({self.created_at.strftime('%d.%m.%Y')})"
+
 class Order(models.Model):
     STATUS_CHOICES = (
         ('new', 'Новый'),
