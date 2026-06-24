@@ -55,10 +55,11 @@
     <!-- Newsletter -->
     <div class="footer-newsletter-col">
       <h4 class="footer-col-title">Рассылка</h4>
-      <p class="footer-newsletter-text">Подпишитесь на новости QarStyle, чтобы первыми узнавать о новых коллекциях и эксклюзивных предложениях.</p>
-      <form class="footer-newsletter-form" onsubmit="event.preventDefault(); alert('Спасибо за подписку!');">
+      <p class="footer-newsletter-text" id="newsletter-message">Подпишитесь на новости QarStyle, чтобы первыми узнавать о новых коллекциях и эксклюзивных предложениях.</p>
+      <form class="footer-newsletter-form" id="newsletter-form">
+        {% csrf_token %}
         <div class="footer-input-group">
-          <input type="email" placeholder="Ваш Email" class="footer-input" required>
+          <input type="email" id="newsletter-email" name="email" placeholder="Ваш Email" class="footer-input" required>
           <button type="submit" class="footer-submit-btn">ОК</button>
         </div>
         <div class="footer-checkbox-group">
@@ -68,6 +69,39 @@
       </form>
     </div>
   </div>
+
+  <script>
+    document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('newsletter-email').value;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const messageEl = document.getElementById('newsletter-message');
+      const formEl = document.getElementById('newsletter-form');
+      
+      fetch('{% url "subscribe_newsletter" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': csrfToken
+        },
+        body: 'email=' + encodeURIComponent(email)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.status === 'success') {
+          messageEl.textContent = data.message;
+          messageEl.style.color = '#10b981'; // green-500
+          formEl.style.display = 'none';
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(error => {
+        alert('Произошла ошибка при подписке.');
+      });
+    });
+  </script>
 
   <div class="footer-bottom">
     <div class="footer-bottom-left">

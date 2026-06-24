@@ -573,6 +573,34 @@ def admin_clients_list(request):
 
 @staff_member_required
 def admin_marketing(request):
+    from .models import NewsletterSubscriber
+    from django.core.mail import send_mass_mail
+    from django.conf import settings
+    from django.contrib import messages
+    
+    subscribers_count = NewsletterSubscriber.objects.filter(is_active=True).count()
+    
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        if subject and message:
+            subscribers = NewsletterSubscriber.objects.filter(is_active=True).values_list('email', flat=True)
+            if subscribers:
+                messages_tuple = (
+                    (subject, message, settings.DEFAULT_FROM_EMAIL, [email]) 
+                    for email in subscribers
+                )
+                try:
+                    send_mass_mail(messages_tuple, fail_silently=False)
+                    messages.success(request, f'Рассылка успешно отправлена {len(subscribers)} подписчикам!')
+                except Exception as e:
+                    messages.error(request, f'Ошибка при отправке: {str(e)}')
+            else:
+                messages.error(request, 'Нет активных подписчиков для рассылки.')
+        else:
+            messages.error(request, 'Тема и текст письма обязательны.')
+
     promos = [
         {"code": "SUMMER26", "type": "Процент", "value": "15%", "used": 47, "limit": 100, "expiry": "31 июля 2026", "status": "Активен"},
         {"code": "WELCOME", "type": "Фиксированная", "value": "5 000 ₸", "used": 234, "limit": 500, "expiry": "Бессрочно", "status": "Активен"},
@@ -588,7 +616,8 @@ def admin_marketing(request):
     
     context = {
         'promos': promos,
-        'campaigns': campaigns
+        'campaigns': campaigns,
+        'subscribers_count': subscribers_count
     }
     return render(request, 'admin/marketing.html', context)
 
@@ -812,3 +841,32 @@ def api_blockitem_reorder(request, block_id):
 @staff_member_required
 def admin_settings(request):
     return render(request, 'admin/settings.html')
+
+from django.views.decorators.http import require_POST
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.http import JsonResponse
+
+@require_POST
+def subscribe_newsletter(request):
+    from .models import NewsletterSubscriber
+    email = request.POST.get('email', '').strip()
+    
+    if not email:
+        return JsonResponse({'status': 'error', 'message': 'Email обязателен'}, status=400)
+        
+    try:
+        validate_email(email)
+    except ValidationError:
+        return JsonResponse({'status': 'error', 'message': 'Некорректный email'}, status=400)
+        
+    subscriber, created = NewsletterSubscriber.objects.get_or_create(
+        email=email,
+        defaults={'is_active': True}
+    )
+    
+    if not created and not subscriber.is_active:
+        subscriber.is_active = True
+        subscriber.save()
+        
+    return JsonResponse({'status': 'success', 'message': 'Вы успешно подписались на рассылку!'})

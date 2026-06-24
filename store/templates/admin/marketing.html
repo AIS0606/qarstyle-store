@@ -134,42 +134,51 @@
             </div>
         </div>
 
-        <!-- Newsletter form placeholder -->
+        <!-- Newsletter form -->
         <div class="bg-white rounded-2xl border border-black/5 p-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h2 class="text-black">Новая рассылка</h2>
-                    <p class="text-xs text-black/40 mt-0.5">Быстрое создание email-кампании</p>
+                    <p class="text-xs text-black/40 mt-0.5">Быстрое создание email-кампании для подписчиков</p>
                 </div>
-                <i data-lucide="gift" class="w-5 h-5 text-black/20"></i>
+                <i data-lucide="mail" class="w-5 h-5 text-black/20"></i>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs text-black/40 block mb-1.5">Тема письма</label>
-                    <input type="text" placeholder="Новая коллекция QarStyle..." class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black/30 outline-none focus:bg-black/[0.08] transition-colors" />
+            
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="p-3 rounded-xl text-sm {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700{% else %}bg-red-50 text-red-700{% endif %}">
+                    {{ message }}
                 </div>
-                <div>
-                    <label class="text-xs text-black/40 block mb-1.5">Сегмент</label>
-                    <select class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:bg-black/[0.08] transition-colors appearance-none">
-                        <option>Все клиенты</option>
-                        <option>VIP клиенты</option>
-                        <option>Постоянные</option>
-                        <option>Новые</option>
-                    </select>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'admin_marketing' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-black/40 block mb-1.5">Тема письма</label>
+                        <input type="text" name="subject" required placeholder="Новая коллекция QarStyle..." class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black/30 outline-none focus:bg-black/[0.08] transition-colors" />
+                    </div>
+                    <div>
+                        <label class="text-xs text-black/40 block mb-1.5">Аудитория</label>
+                        <div class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black cursor-not-allowed opacity-70">
+                            Все активные подписчики ({{ subscribers_count }})
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="mt-3">
-                <label class="text-xs text-black/40 block mb-1.5">Содержание</label>
-                <textarea placeholder="Текст рассылки..." rows="3" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black/30 outline-none focus:bg-black/[0.08] transition-colors resize-none"></textarea>
-            </div>
-            <div class="flex items-center justify-end gap-2 mt-3">
-                <button class="px-4 py-2 rounded-full text-xs bg-black/5 text-black/50 hover:bg-black/10 transition-colors">
-                    Предпросмотр
-                </button>
-                <button class="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors">
-                    <i data-lucide="send" class="w-3 h-3"></i> Отправить
-                </button>
-            </div>
+                <div class="mt-3">
+                    <label class="text-xs text-black/40 block mb-1.5">Текст письма</label>
+                    <textarea name="message" required placeholder="Текст рассылки..." rows="5" class="w-full bg-black/5 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black/30 outline-none focus:bg-black/[0.08] transition-colors resize-none"></textarea>
+                </div>
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-black/5">
+                    <p class="text-xs text-black/40">Письмо будет отправлено от имени info@qarstyle.kz</p>
+                    <button type="submit" class="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs bg-black text-white hover:bg-black/80 transition-colors shadow-sm">
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i> Отправить всем
+                    </button>
+                </div>
+            </form>
         </div>
     </main>
 </div>

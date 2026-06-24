@@ -57,6 +57,9 @@ urlpatterns = [
     
     path('accounts/', include('allauth.urls')),
     path('', include('store.urls')),
+    
+    # Newsletter
+    path('newsletter/subscribe/', admin_views.subscribe_newsletter, name='subscribe_newsletter'),
 ]
 
 if settings.DEBUG:
