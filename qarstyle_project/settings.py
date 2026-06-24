@@ -231,7 +231,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
 # AI Assistant Settings
-GEMINI_API_KEY = ''
-GROQ_API_KEY = ''
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+GROQ_API_KEY = config('GROQ_API_KEY', default='')
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
