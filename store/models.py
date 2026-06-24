@@ -102,6 +102,39 @@ class Favorite(models.Model):
         if self.user:
             return f"Избранное {self.user.username}"
         return f"Избранное сессии {self.session_id}"
+class PromoCode(models.Model):
+    DISCOUNT_TYPES = (
+        ('percent', 'Процент (%)'),
+        ('fixed', 'Сумма (₸)'),
+    )
+    code = models.CharField(max_length=50, unique=True, verbose_name="Код промокода")
+    discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPES, default='percent', verbose_name="Тип скидки")
+    discount_value = models.PositiveIntegerField(verbose_name="Размер скидки")
+    usage_limit = models.PositiveIntegerField(default=0, verbose_name="Лимит использований (0 - без лимита)")
+    used_count = models.PositiveIntegerField(default=0, verbose_name="Использовано раз")
+    valid_until = models.DateTimeField(null=True, blank=True, verbose_name="Действителен до")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан")
+
+    class Meta:
+        verbose_name = "Промокод"
+        verbose_name_plural = "Промокоды"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.code
+        
+    @property
+    def is_valid(self):
+        from django.utils import timezone
+        if not self.is_active:
+            return False
+        if self.usage_limit > 0 and self.used_count >= self.usage_limit:
+            return False
+        if self.valid_until and timezone.now() > self.valid_until:
+            return False
+        return True
+
 class Order(models.Model):
     STATUS_CHOICES = (
         ('new', 'Новый'),
@@ -111,6 +144,7 @@ class Order(models.Model):
         ('cancelled', 'Отменен'),
     )
 
+    promo_code = models.ForeignKey(PromoCode, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Примененный промокод")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Пользователь")
     first_name = models.CharField(max_length=50, verbose_name="Имя")
     last_name = models.CharField(max_length=50, verbose_name="Фамилия")

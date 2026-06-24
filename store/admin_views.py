@@ -623,12 +623,10 @@ def admin_marketing(request):
         else:
             messages.error(request, 'Тема и текст письма обязательны.')
 
-    promos = [
-        {"code": "SUMMER26", "type": "Процент", "value": "15%", "used": 47, "limit": 100, "expiry": "31 июля 2026", "status": "Активен"},
-        {"code": "WELCOME", "type": "Фиксированная", "value": "5 000 ₸", "used": 234, "limit": 500, "expiry": "Бессрочно", "status": "Активен"},
-        {"code": "VIP2026", "type": "Процент", "value": "20%", "used": 89, "limit": 200, "expiry": "31 декабря 2026", "status": "Активен"},
-        {"code": "SPRING25", "type": "Процент", "value": "10%", "used": 312, "limit": 300, "expiry": "30 апреля 2025", "status": "Истёк"},
-    ]
+    from .models import PromoCode
+    promos = PromoCode.objects.all()
+    active_promos_count = promos.filter(is_active=True).count()
+    total_used_count = sum(p.used_count for p in promos)
     
     campaigns = [
         {"name": "Летняя коллекция 2026", "type": "Email", "sent": 3240, "opened": 1247, "clicks": 389, "orders": 67, "status": "Отправлено"},
@@ -638,10 +636,54 @@ def admin_marketing(request):
     
     context = {
         'promos': promos,
+        'active_promos_count': active_promos_count,
+        'total_used_count': total_used_count,
         'campaigns': campaigns,
         'subscribers_count': subscribers_count
     }
     return render(request, 'admin/marketing.html', context)
+
+from django.views.decorators.http import require_POST
+
+@staff_member_required
+@require_POST
+def admin_promo_add(request):
+    from .models import PromoCode
+    from datetime import datetime
+    
+    code = request.POST.get('code')
+    discount_type = request.POST.get('discount_type')
+    discount_value = request.POST.get('discount_value')
+    usage_limit = request.POST.get('usage_limit') or 0
+    valid_until = request.POST.get('valid_until')
+    
+    if code and discount_type and discount_value:
+        try:
+            PromoCode.objects.create(
+                code=code.upper(),
+                discount_type=discount_type,
+                discount_value=int(discount_value),
+                usage_limit=int(usage_limit),
+                valid_until=valid_until if valid_until else None,
+            )
+            messages.success(request, f'Промокод {code} успешно создан!')
+        except Exception as e:
+            messages.error(request, f'Ошибка при создании промокода: {str(e)}')
+    else:
+        messages.error(request, 'Пожалуйста, заполните все обязательные поля.')
+        
+    return redirect('custom_admin_marketing')
+
+@staff_member_required
+@require_POST
+def admin_promo_delete(request, promo_id):
+    from .models import PromoCode
+    from django.shortcuts import get_object_or_404
+    
+    promo = get_object_or_404(PromoCode, id=promo_id)
+    promo.delete()
+    messages.success(request, f'Промокод {promo.code} удален.')
+    return redirect('custom_admin_marketing')
 
 @staff_member_required
 def admin_block_add(request):

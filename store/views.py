@@ -201,11 +201,10 @@ def product_detail(request, product_id):
 def get_cart_data(request):
     cart = request.session.get('cart', {})
     cart_items = []
-    total_price = 0
+    subtotal = 0
     for cart_key, item_data in cart.items():
         item_total = item_data['price'] * item_data['quantity']
-        total_price += item_total
-        # Support old-format keys (just product_id) and new composite keys
+        subtotal += item_total
         cart_items.append({
             'cart_key': cart_key,
             'product_id': item_data.get('product_id', cart_key.split('_')[0]),
@@ -218,18 +217,70 @@ def get_cart_data(request):
             'color_hex':  item_data.get('color_hex', ''),
             'size':       item_data.get('size', ''),
         })
-    return cart_items, total_price
+        
+    discount = 0
+    promo_code_obj = None
+    promo_code_str = request.session.get('promo_code')
+    if promo_code_str:
+        from .models import PromoCode
+        try:
+            promo = PromoCode.objects.get(code=promo_code_str)
+            if promo.is_valid:
+                promo_code_obj = promo
+                if promo.discount_type == 'percent':
+                    discount = (subtotal * promo.discount_value) / 100
+                elif promo.discount_type == 'fixed':
+                    discount = promo.discount_value
+            else:
+                del request.session['promo_code']
+        except PromoCode.DoesNotExist:
+            del request.session['promo_code']
+            
+    total_price = max(0, subtotal - discount)
+    
+    return {
+        'items': cart_items,
+        'subtotal': subtotal,
+        'discount': discount,
+        'total': total_price,
+        'promo_code': promo_code_obj
+    }
 
 def get_favorite_ids(request):
     favorite = get_favorites(request)
     return list(favorite.products.values_list('id', flat=True))
 
 def cart(request):
-    cart_items, total_price = get_cart_data(request)
+    cart_data = get_cart_data(request)
     return render(request, 'store/cart.html', {
-        'cart_items': cart_items,
-        'total_price': total_price
+        'cart_items': cart_data['items'],
+        'subtotal': cart_data['subtotal'],
+        'discount': cart_data['discount'],
+        'total_price': cart_data['total'],
+        'promo_code': cart_data['promo_code'],
     })
+
+from django.views.decorators.http import require_POST
+
+@require_POST
+def apply_promo(request):
+    from .models import PromoCode
+    code = request.POST.get('promo_code', '').strip().upper()
+    if not code:
+        messages.error(request, 'Пожалуйста, введите промокод.')
+        return redirect('cart')
+        
+    try:
+        promo = PromoCode.objects.get(code=code)
+        if not promo.is_valid:
+            messages.error(request, 'Этот промокод недействителен или истек.')
+        else:
+            request.session['promo_code'] = promo.code
+            messages.success(request, f'Промокод {code} успешно применен!')
+    except PromoCode.DoesNotExist:
+        messages.error(request, 'Промокод не найден.')
+        
+    return redirect('cart')
 
 def add_to_cart(request, product_id):
     from .models import Color, ProductImage
@@ -316,10 +367,12 @@ from .forms import RegistrationForm, OrderCreateForm
 from .models import Category, Product, ProductImage, Favorite, Size, Color, ProductVariant, Department, Order, OrderItem
 
 def checkout(request):
-    cart = request.session.get('cart', {})
-    if not cart:
+    cart_session = request.session.get('cart', {})
+    if not cart_session:
         messages.error(request, 'Ваша корзина пуста.')
         return redirect('cart')
+
+    cart_data = get_cart_data(request)
 
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
@@ -327,33 +380,37 @@ def checkout(request):
             order = form.save(commit=False)
             if request.user.is_authenticated:
                 order.user = request.user
+            
+            # Сохраняем промокод если есть
+            if cart_data['promo_code']:
+                order.promo_code = cart_data['promo_code']
+                
             order.save()
             
-            total_price = 0
-            for cart_key, item in cart.items():
-                real_pid = item.get('product_id')
-                if not real_pid:
-                    # Fallback for older cart sessions
-                    real_pid = str(cart_key).split('_')[0]
-                
-                product = get_object_or_404(Product, id=real_pid)
-                price = float(item['price'])
-                quantity = item['quantity']
+            for item in cart_data['items']:
+                product = get_object_or_404(Product, id=item['product_id'])
                 OrderItem.objects.create(
                     order=order,
                     product=product,
-                    price=price,
-                    quantity=quantity,
+                    price=item['price'],
+                    quantity=item['quantity'],
                     color_name=item.get('color_name', ''),
                     size_name=item.get('size', ''),
                 )
-                total_price += price * quantity
             
-            order.total_price = total_price
+            order.total_price = cart_data['total']
             order.save()
             
-            # Очищаем корзину
+            # Увеличиваем счетчик промокода
+            if cart_data['promo_code']:
+                promo = cart_data['promo_code']
+                promo.used_count += 1
+                promo.save()
+            
+            # Очищаем корзину и промокод
             request.session['cart'] = {}
+            if 'promo_code' in request.session:
+                del request.session['promo_code']
             
             if order.payment_method == 'kaspi':
                 return redirect('kaspi_payment', order_id=order.id)
@@ -370,8 +427,6 @@ def checkout(request):
                 'email': request.user.email,
             }
         form = OrderCreateForm(initial=initial_data)
-    
-    total_price = sum(float(item['price']) * item['quantity'] for item in cart.values())
         
     return render(request, 'store/checkout.html', {
         'form': form, 

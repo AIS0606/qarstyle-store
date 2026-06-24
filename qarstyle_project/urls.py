@@ -36,6 +36,8 @@ urlpatterns = [
     path('admin/store/category/', admin_views.admin_categories_list, name='custom_admin_categories'),
     path('admin/auth/user/', admin_views.admin_clients_list, name='custom_admin_clients'),
     path('admin/marketing/', admin_views.admin_marketing, name='custom_admin_marketing'),
+    path('admin/marketing/promo/add/', admin_views.admin_promo_add, name='admin_promo_add'),
+    path('admin/marketing/promo/<int:promo_id>/delete/', admin_views.admin_promo_delete, name='admin_promo_delete'),
     path('admin/settings/', admin_views.admin_settings, name='custom_admin_settings'),
     
     # Custom block routing
