@@ -733,15 +733,15 @@ def ai_chat(request):
                     text = g_res.json()['candidates'][0]['content']['parts'][0]['text']
             except: pass
 
-            # 2. Пробуем Groq (Llama 3.1)
+            # 2. Пробуем Groq (Llama 3.3 70B)
             if not text:
                 try:
                     q_url = "https://api.groq.com/openai/v1/chat/completions"
                     headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
                     q_res = requests.post(q_url, headers=headers, json={
                         "messages": [{"role": "user", "content": prompt}],
-                        "model": "llama-3.1-8b-instant"
-                    }, timeout=5)
+                        "model": "llama-3.3-70b-versatile"
+                    }, timeout=10)
                     if q_res.status_code == 200:
                         text = q_res.json()['choices'][0]['message']['content']
                 except: pass
