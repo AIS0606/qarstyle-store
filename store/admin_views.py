@@ -587,12 +587,31 @@ def admin_marketing(request):
         if subject and message:
             subscribers = NewsletterSubscriber.objects.filter(is_active=True).values_list('email', flat=True)
             if subscribers:
-                messages_tuple = (
-                    (subject, message, settings.DEFAULT_FROM_EMAIL, [email]) 
-                    for email in subscribers
-                )
+                from django.core.mail import get_connection, EmailMultiAlternatives
+                from django.template.loader import render_to_string
+                from django.utils.html import strip_tags
+                
+                connection = get_connection(fail_silently=False)
+                messages_list = []
+                
+                # Рендерим HTML шаблон
+                html_content = render_to_string('store/emails/newsletter.html', {
+                    'subject': subject,
+                    'message': message
+                })
+                
+                for email in subscribers:
+                    msg = EmailMultiAlternatives(
+                        subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [email]
+                    )
+                    msg.attach_alternative(html_content, "text/html")
+                    messages_list.append(msg)
+                
                 try:
-                    send_mass_mail(messages_tuple, fail_silently=False)
+                    connection.send_messages(messages_list)
                     messages.success(request, f'Рассылка успешно отправлена {len(subscribers)} подписчикам!')
                 except Exception as e:
                     messages.error(request, f'Ошибка при отправке: {str(e)}')
