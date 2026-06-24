@@ -136,6 +136,36 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Заказ №{self.id} - {self.first_name} {self.last_name}"
+        
+    def update_status_if_needed(self):
+        """
+        Автоматически обновляет статус заказа на основе прошедшего времени.
+        Симуляция реального цикла доставки (Paid -> Shipped -> Completed).
+        """
+        from django.utils import timezone
+        import datetime
+        
+        if self.status in ['new', 'cancelled', 'completed']:
+            return False  # Эти статусы не меняются автоматически
+            
+        now = timezone.now()
+        time_passed = now - self.updated_at
+        
+        changed = False
+        # Если статус 'paid' и прошло более 2 минут -> 'shipped'
+        if self.status == 'paid' and time_passed > datetime.timedelta(minutes=2):
+            self.status = 'shipped'
+            changed = True
+            
+        # Если статус 'shipped' и прошло более 3 минут с момента ЕГО установки (то есть 5 мин с момента оплаты)
+        elif self.status == 'shipped' and time_passed > datetime.timedelta(minutes=3):
+            self.status = 'completed'
+            changed = True
+            
+        if changed:
+            self.save(update_fields=['status', 'updated_at'])
+            return True
+        return False
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name="Заказ")

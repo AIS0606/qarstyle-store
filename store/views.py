@@ -559,6 +559,9 @@ def profile(request):
         form = BodyProfileForm(instance=body_profile)
         
     orders = Order.objects.filter(user=request.user).prefetch_related('items__product')
+    for order in orders:
+        order.update_status_if_needed()
+        
     return render(request, 'store/profile.html', {
         'orders': orders,
         'body_form': form,

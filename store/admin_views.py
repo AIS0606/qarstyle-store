@@ -408,6 +408,9 @@ def admin_orders_list(request):
 
     orders = Order.objects.prefetch_related('items__product__category').all().order_by('-created_at')
 
+    # Автоматически обновляем статусы для нужных заказов перед отображением
+    for order in orders.filter(status__in=['paid', 'shipped']):
+        order.update_status_if_needed()
     # Поиск
     search_query = request.GET.get('q', '').strip()
     if search_query:
