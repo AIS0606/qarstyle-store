@@ -430,8 +430,12 @@ def checkout(request):
         
     return render(request, 'store/checkout.html', {
         'form': form, 
-        'cart': cart,
-        'total_price': total_price
+        'cart': cart_session,
+        'cart_items': cart_data['items'],
+        'subtotal': cart_data['subtotal'],
+        'discount': cart_data['discount'],
+        'total_price': cart_data['total'],
+        'promo_code': cart_data['promo_code'],
     })
 
 def get_favorites(request):
